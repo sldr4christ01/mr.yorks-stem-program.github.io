@@ -1,26 +1,188 @@
+```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Mr. York's STEM Program</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #eef2f7, #dfe7ef);
+            color: #1f2937;
+        }
+
+        header {
+            background: #1f3a5f;
+            color: white;
+            text-align: center;
+            padding: 60px 20px 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3rem;
+        }
+
+        header p {
+            margin-top: 12px;
+            font-size: 1.2rem;
+            color: #dbe7f3;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .intro h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .intro p {
+            color: #5b6470;
+            font-size: 1.05rem;
+        }
+
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .class-card {
+            background: white;
+            border-radius: 16px;
+            padding: 35px 25px;
+            text-align: center;
+            text-decoration: none;
+            color: #1f2937;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-top: 6px solid #1f3a5f;
+        }
+
+        .class-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.16);
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .class-card h3 {
+            margin: 0 0 10px;
+            font-size: 1.6rem;
+        }
+
+        .class-card p {
+            margin: 0;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .physics {
+            border-top-color: #2563eb;
+        }
+
+        .robotics {
+            border-top-color: #ea580c;
+        }
+
+        .csp {
+            border-top-color: #16a34a;
+        }
+
+        footer {
+            text-align: center;
+            padding: 35px 20px;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+
+            header {
+                padding: 45px 15px 40px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<h1>Mr. York's STEM Program</h1>
+<header>
+    <h1>Mr. York's STEM Program</h1>
+    <p>Physics • Engineering • Robotics • Computer Science</p>
+</header>
 
-<ul>
-    <li>
-        <a href="AP-Physics/">AP Physics</a>
-    </li>
+<main>
 
-    <li>
-        <a href="Robotics/">Robotics</a>
-    </li>
+    <section class="intro">
+        <h2>Choose a Class</h2>
+        <p>
+            Select a course below to access interactive activities,
+            simulations, projects, and classroom resources.
+        </p>
+    </section>
 
-    <li>
-        <a href="AP-CSP/">AP Computer Science Principles</a>
-    </li>
-</ul>
+    <section class="class-grid">
+
+        <a class="class-card physics" href="AP-Physics/">
+            <div class="icon">⚛️</div>
+            <h3>AP Physics</h3>
+            <p>
+                Explore physics through interactive activities,
+                simulations, data analysis, and problem solving.
+            </p>
+        </a>
+
+        <a class="class-card robotics" href="Robotics/">
+            <div class="icon">🤖</div>
+            <h3>Robotics</h3>
+            <p>
+                Design, build, program, test, and improve robotic
+                systems through engineering challenges.
+            </p>
+        </a>
+
+        <a class="class-card csp" href="AP-CSP/">
+            <div class="icon">💻</div>
+            <h3>AP Computer Science Principles</h3>
+            <p>
+                Learn programming, data, algorithms, computing systems,
+                and the impact of technology.
+            </p>
+        </a>
+
+    </section>
+
+</main>
+
+<footer>
+    Mr. York's STEM Program
+</footer>
 
 </body>
 </html>
+```
