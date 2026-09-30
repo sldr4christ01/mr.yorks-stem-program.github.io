@@ -1,0 +1,2349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 2 Internet Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,600;1,400&display=swap">
+<style>
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --surface-2:#edf1f6; --text:#17202b; --muted:#566374; --border:#d6dde6;
+  --accent:#1f6feb; --accent-ink:#ffffff; --accent-soft:#e6effd;
+  --good:#17803a; --good-soft:#e2f4e7; --bad:#c42b2b; --bad-soft:#fdeceb; --warn:#8a5a00; --warn-soft:#fff3d1;
+  --s1:#0f766e; --s2:#4f46e5; --s3:#c2410c; --s4:#7e22ce; --s5:#0369a1; --s6:#be123c;
+  --edge:#8995a5; --node:#ffffff; --node-stroke:#566374;
+  --cert-bg:#fffdf8; --cert-rule:#c9d3e0;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 2px 6px rgba(16,24,40,.06);
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e131a; --surface:#161d26; --surface-2:#1f2833; --text:#e5ebf2; --muted:#9ba8b8; --border:#2c3746;
+    --accent:#5c9dff; --accent-ink:#0b1320; --accent-soft:#18294a;
+    --good:#4cc46f; --good-soft:#12301c; --bad:#ff6f6f; --bad-soft:#3a1818; --warn:#e6b546; --warn-soft:#352a0f;
+    --s1:#2dd4bf; --s2:#8b93ff; --s3:#fb923c; --s4:#c58cff; --s5:#38bdf8; --s6:#fb7185;
+    --edge:#6f7c8e; --node:#1f2833; --node-stroke:#9ba8b8;
+    --cert-bg:#131a23; --cert-rule:#3a4a60;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#0e131a; --surface:#161d26; --surface-2:#1f2833; --text:#e5ebf2; --muted:#9ba8b8; --border:#2c3746;
+    --accent:#5c9dff; --accent-ink:#0b1320; --accent-soft:#18294a;
+    --good:#4cc46f; --good-soft:#12301c; --bad:#ff6f6f; --bad-soft:#3a1818; --warn:#e6b546; --warn-soft:#352a0f;
+    --s1:#2dd4bf; --s2:#8b93ff; --s3:#fb923c; --s4:#c58cff; --s5:#38bdf8; --s6:#fb7185;
+    --edge:#6f7c8e; --node:#1f2833; --node-stroke:#9ba8b8;
+    --cert-bg:#131a23; --cert-rule:#3a4a60;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+    color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 var(--sans)}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+a{color:var(--accent)}
+b,strong{font-weight:700}
+h2{font-size:1.6rem;line-height:1.2;margin:4px 0 8px;text-wrap:balance}
+h3{font-size:1.1rem;margin:0}
+h4{font-size:1.02rem;margin:0 0 4px}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+
+/* Header */
+header.top{background:var(--surface);border-bottom:1px solid var(--border)}
+@media (min-width:760px){header.top{position:sticky;top:env(safe-area-inset-top, 0px);z-index:30}}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;padding:12px 0 6px;flex-wrap:wrap}
+.top-row h1{font-size:1.2rem;margin:2px 0 0;line-height:1.2}
+.progress{display:flex;align-items:center;gap:10px;flex:0 1 300px;min-width:200px}
+.progress .lbl{font-size:.85rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.bar{flex:1;height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .4s ease}
+nav#nav{display:flex;gap:6px;overflow-x:auto;padding:6px 0 10px;scrollbar-width:thin}
+nav#nav a{flex:0 0 auto;text-decoration:none;color:var(--muted);font-size:.86rem;font-weight:600;padding:6px 12px;border-radius:99px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:6px}
+nav#nav a:hover{color:var(--text);border-color:var(--muted)}
+nav#nav a.active{background:var(--text);color:var(--surface);border-color:var(--text)}
+nav#nav a .ck{color:var(--good);font-weight:800}
+nav#nav a.active .ck{color:inherit}
+nav#nav a .lock{width:12px;height:12px;flex:0 0 12px}
+nav#nav a.locked{color:var(--muted);opacity:.75}
+
+main{padding:20px 16px 60px}
+.view{display:none}
+.view.on{display:block}
+
+/* Cards & structure */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin:0 0 14px;box-shadow:var(--shadow)}
+.card > h4{margin-bottom:2px}
+.step{display:flex;align-items:center;gap:10px;margin:26px 0 12px}
+.step > span{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--text);color:var(--surface);font-size:.85rem;font-weight:800;flex:0 0 28px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0}
+.chip{font-size:.78rem;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--surface-2);color:var(--muted);border:1px solid var(--border);white-space:nowrap}
+.chip.tq{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.chip.ced{font-family:var(--mono);font-weight:600}
+.note{font-size:.9rem;color:var(--muted);margin:10px 0 0}
+
+.station-head{border-left:6px solid var(--sc);background:var(--surface);border-radius:14px;padding:16px 18px;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
+.station-head .eyebrow{color:var(--sc)}
+.sp{display:flex;align-items:center;gap:10px;margin-top:12px;max-width:360px}
+.sp .bar span{background:var(--sc)}
+.sp .lbl{font-size:.85rem;color:var(--muted);white-space:nowrap}
+
+.callout{border-radius:12px;padding:14px 16px;margin:14px 0}
+.callout-title{font-weight:800;margin-bottom:4px}
+.callout.trap{background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 30%,transparent)}
+.callout.trap .callout-title{color:var(--warn)}
+.callout.tip{background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+.callout.tip .callout-title{color:var(--accent)}
+.callout p:last-child,.callout ol:last-child,.callout ul:last-child{margin-bottom:0}
+.callout ol,.callout ul{margin:6px 0 0;padding-left:22px}
+.callout li{margin:3px 0}
+
+/* Lesson */
+.defs{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin:6px 0 4px}
+.def{background:var(--surface-2);border-radius:10px;padding:12px 14px}
+.def dt{font-weight:800;margin-bottom:2px}
+.def dd{margin:0;font-size:.95rem}
+.lesson h4{margin-top:16px}
+.lesson h4:first-child{margin-top:0}
+.caption{font-size:.92rem;color:var(--muted);margin-top:8px}
+.pathstrip{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 0}
+.hop{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:.88rem;font-weight:600}
+.hop.end{border-color:var(--accent);background:var(--accent-soft)}
+.arrow{color:var(--muted);font-weight:700}
+.two-col{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.panel{border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.panel.yes{border-color:color-mix(in srgb,var(--good) 45%,transparent);background:var(--good-soft)}
+.panel.no{border-color:color-mix(in srgb,var(--bad) 45%,transparent);background:var(--bad-soft)}
+.panel h5{margin:0 0 6px;font-size:.95rem}
+.panel ul{margin:0;padding-left:20px}
+.panel li{margin:3px 0;font-size:.94rem}
+.envelope{font-family:var(--mono);font-size:.9rem;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;max-width:360px;margin:10px 0 0}
+.envelope .hdr{background:var(--surface-2);padding:8px 12px;display:grid;gap:2px}
+.envelope .k{display:inline-block;width:52px;color:var(--muted);font-weight:700}
+.envelope .body{padding:10px 12px;color:var(--muted)}
+table.tbl{width:100%;border-collapse:collapse;font-size:.93rem;margin:8px 0 0}
+.tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl th{font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tbl td:first-child{font-weight:800;white-space:nowrap}
+.tbl-wrap{overflow-x:auto}
+@media (max-width:560px){.tbl.stack thead{display:none}.tbl.stack tr{display:block;padding:8px 0;border-bottom:1px solid var(--border)}.tbl.stack td{display:block;border:0;padding:2px 0}.tbl.stack td:first-child{font-size:1.05rem}.tbl.stack td:nth-child(3)::before{content:"Best for: ";font-weight:700;color:var(--muted)}}
+.packet{display:inline-flex;flex-direction:column;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);font-family:var(--mono);min-width:150px}
+.packet .meta{background:var(--surface-2);padding:6px 10px;font-size:.72rem;color:var(--muted);display:grid;gap:1px;line-height:1.35}
+.packet .meta .num{color:var(--s4);font-weight:800}
+.packet .data{display:block;padding:8px 10px;font-size:1rem;font-weight:700;white-space:pre}
+.packet.big{min-width:230px}
+.packet.big .meta{font-size:.82rem}
+.packet.big .data{font-size:1.15rem}
+.anatomy{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.anatomy ul{margin:0;padding-left:20px;flex:1 1 260px}
+.anatomy li{margin:4px 0}
+.stack{display:grid;gap:6px;max-width:520px;margin:10px 0 0}
+.layer{display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:center;border-radius:10px;padding:9px 12px;border:1px solid var(--border);background:var(--surface-2);font-size:.93rem}
+.layer b{font-family:var(--mono)}
+.factors{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin:10px 0}
+.factor{border:1px solid var(--border);border-radius:10px;padding:12px}
+.factor .ft{font-weight:800;color:var(--s6)}
+.mini-nets{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:10px 0 0}
+.mini-nets figure{margin:0;border:1px solid var(--border);border-radius:10px;padding:10px}
+.mini-nets figcaption{font-size:.9rem;margin-top:4px}
+
+/* Buttons */
+.btn{font:inherit;font-weight:650;font-size:.95rem;border:1.5px solid var(--border);background:var(--surface);color:var(--text);padding:8px 16px;border-radius:10px;cursor:pointer;min-height:40px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:hover{border-color:var(--muted)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{filter:brightness(1.07);border-color:var(--accent)}
+.btn-sm{min-height:34px;padding:5px 12px;font-size:.88rem}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* Home */
+.hero h2{font-size:1.75rem}
+.field{display:grid;gap:4px;max-width:360px;margin-top:12px}
+.field span{font-size:.85rem;font-weight:700;color:var(--muted)}
+input[type=text],textarea,select{font:inherit;color:var(--text);background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;width:100%}
+textarea{min-height:90px;resize:vertical}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin:12px 0}
+.qbtn{font:inherit;text-align:left;border:1.5px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 10px;cursor:pointer;min-height:64px}
+.qbtn .n{display:block;font-weight:800;font-size:1.05rem}
+.qbtn .t{display:block;font-size:.74rem;color:var(--muted);line-height:1.25}
+.qbtn[aria-pressed=true]{border-color:var(--bad);background:var(--bad-soft)}
+.qbtn[aria-pressed=true] .n::after{content:" ✗";color:var(--bad)}
+.recommend{font-size:.95rem}
+.recommend .rec-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.stations{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.scard{display:block;text-decoration:none;color:var(--text);background:var(--surface);border:1px solid var(--border);border-top:5px solid var(--sc);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);position:relative;transition:transform .15s}
+.scard:hover{transform:translateY(-2px)}
+.scard .eyebrow{color:var(--sc)}
+.scard h3{margin:2px 0 6px;font-size:1.08rem}
+.scard .status{font-size:.85rem;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:8px}
+.scard .status .bar{max-width:120px}
+.scard .status .bar span{background:var(--sc)}
+.badge{position:absolute;top:10px;right:10px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;background:var(--bad-soft);color:var(--bad);padding:3px 8px;border-radius:99px}
+.badge.done{background:var(--good-soft);color:var(--good)}
+details.teacher summary{cursor:pointer;font-weight:800}
+details.teacher[open] summary{margin-bottom:10px}
+details.teacher ul{padding-left:20px}
+details.teacher li{margin:4px 0}
+
+/* Feedback & MCQ */
+.q-stem{font-size:1.03rem;margin-bottom:6px}
+.q-tag{font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.fig{margin:8px 0;border:1px solid var(--border);border-radius:10px;padding:8px;max-width:520px;background:var(--surface)}
+.opts{display:grid;gap:8px;margin:10px 0 0}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;font:inherit;background:var(--surface);color:var(--text);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover:not([disabled]){border-color:var(--muted)}
+.opt .let{flex:0 0 28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);font-weight:800;font-size:.85rem}
+.opt .ot{padding-top:2px}
+.opt[disabled]{cursor:default}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .let{background:var(--accent);color:var(--accent-ink)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.right .let{background:var(--good);color:var(--surface)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .let{background:var(--bad);color:var(--surface)}
+.opt.faded{opacity:.55}
+.fb{border-radius:10px;padding:10px 14px;margin-top:10px;font-size:.95rem;border-left:4px solid}
+.fb.good{background:var(--good-soft);border-color:var(--good)}
+.fb.bad{background:var(--bad-soft);border-color:var(--bad)}
+.fb.info{background:var(--accent-soft);border-color:var(--accent)}
+.fb b.lead{display:block;margin-bottom:2px}
+.fb p{margin:4px 0 0}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+
+/* Match */
+.match{display:grid;gap:12px;grid-template-columns:minmax(150px,.8fr) 1.6fr;margin-top:12px}
+@media (max-width:620px){.match{grid-template-columns:1fr}}
+.mcol{display:grid;gap:8px;align-content:start}
+.mitem{font:inherit;text-align:left;border:1.5px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:9px 12px;cursor:pointer;font-size:.94rem}
+.mitem.term{font-weight:750}
+.mitem.sel{border-color:var(--accent);background:var(--accent-soft)}
+.mitem.done{border-color:var(--good);background:var(--good-soft);cursor:default}
+.mitem.no{border-color:var(--bad);background:var(--bad-soft)}
+.mitem .pair{display:block;font-size:.78rem;font-weight:800;color:var(--good);margin-bottom:1px}
+
+/* Sorter */
+.sorter{display:grid;gap:10px;margin-top:12px}
+.sitem{border:1.5px solid var(--border);border-radius:12px;padding:10px 12px}
+.sitem.ok{border-color:var(--good);background:var(--good-soft)}
+.sitem .st{font-weight:650}
+.sitem .sbtns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sitem .sbtn{font:inherit;font-size:.86rem;font-weight:700;border:1.5px solid var(--border);background:var(--surface);color:var(--text);border-radius:99px;padding:5px 12px;cursor:pointer}
+.sitem .sbtn:hover:not([disabled]){border-color:var(--muted)}
+.sitem .sbtn.right{background:var(--good);border-color:var(--good);color:var(--surface)}
+.sitem .sbtn.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.sitem .why{font-size:.9rem;margin-top:8px}
+.sitem .why.bad{color:var(--bad)}
+.counter{font-size:.85rem;color:var(--muted);font-weight:700;margin-top:10px}
+
+/* Order */
+.order{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:12px}
+@media (max-width:680px){.order{grid-template-columns:1fr}}
+.order h5{margin:0 0 6px;font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.olist{display:grid;gap:8px;align-content:start;min-height:60px}
+.oitem{font:inherit;text-align:left;border:1.5px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:9px 12px;cursor:pointer;font-size:.93rem}
+.oitem:hover{border-color:var(--muted)}
+.oplaced{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--good);background:var(--good-soft);border-radius:10px;padding:9px 12px;font-size:.93rem}
+.oplaced .on{flex:0 0 24px;height:24px;border-radius:50%;background:var(--good);color:var(--surface);display:grid;place-items:center;font-weight:800;font-size:.8rem}
+.empty-slot{border:1.5px dashed var(--border);border-radius:10px;padding:9px 12px;color:var(--muted);font-size:.9rem}
+
+/* Network lab */
+.svgwrap{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:6px;margin-top:10px}
+svg.net{width:100%;height:auto;display:block;max-height:400px;touch-action:manipulation}
+.net .edge{stroke:var(--edge);stroke-width:3;stroke-linecap:round;transition:stroke .15s}
+.net .edge.hover{stroke:var(--accent);stroke-width:5}
+.net .edge.cut{stroke:var(--bad);stroke-dasharray:5 7;stroke-width:3;opacity:.75}
+.net .edge.onpath{stroke:var(--accent);stroke-width:6}
+.net .hit{stroke:transparent;stroke-width:30;cursor:pointer;stroke-linecap:round}
+.net .xmark{stroke:var(--bad);stroke-width:4.5;stroke-linecap:round;pointer-events:none}
+.net .node circle{fill:var(--node);stroke:var(--node-stroke);stroke-width:2}
+.net .node text{fill:var(--text);font-weight:800;font-size:16px;text-anchor:middle;dominant-baseline:central;pointer-events:none;font-family:system-ui,sans-serif}
+.net .node.small text{font-size:12px}
+.net .node.src circle{fill:var(--accent-soft);stroke:var(--accent);stroke-width:3}
+.net .node.dst circle{fill:var(--warn-soft);stroke:var(--warn);stroke-width:3}
+.net .node.dead circle{stroke-dasharray:4 3}
+.net .node.click{cursor:pointer}
+.net .node.click:hover circle{stroke:var(--accent);stroke-width:3}
+.net .node.inpath circle{fill:var(--accent);stroke:var(--accent)}
+.net .node.inpath text{fill:var(--accent-ink)}
+.net .node.bad circle{stroke:var(--bad);stroke-width:4}
+.net .pkt{fill:var(--s4);stroke:var(--surface);stroke-width:2}
+.net .dp{fill:none;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;opacity:.5;pointer-events:none}
+.net .lbl-s{font-size:11px;font-weight:800;fill:var(--accent);text-anchor:middle;text-transform:uppercase;letter-spacing:.06em}
+.net .lbl-t{font-size:11px;font-weight:800;fill:var(--warn);text-anchor:middle;text-transform:uppercase;letter-spacing:.06em}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
+.tab{font:inherit;font-weight:700;font-size:.88rem;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);border-radius:99px;padding:6px 14px;cursor:pointer}
+.tab.on{background:var(--s3);border-color:var(--s3);color:var(--surface)}
+.tab .ck{color:var(--good);margin-left:4px}
+.tab.on .ck{color:var(--surface)}
+.lab-status{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-top:10px;font-weight:650}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:.88rem;font-weight:800}
+.pill.ok{background:var(--good-soft);color:var(--good)}
+.pill.no{background:var(--bad-soft);color:var(--bad)}
+.pill.neutral{background:var(--surface-2);color:var(--muted)}
+.lab-log{font-family:var(--mono);font-size:.84rem;margin-top:10px;display:grid;gap:3px}
+.lab-log div{color:var(--muted)}
+.lab-log div:first-child{color:var(--text);font-weight:700}
+details.kbd{margin-top:10px;font-size:.9rem}
+details.kbd summary{cursor:pointer;color:var(--muted);font-weight:650}
+.edge-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.edge-btns button{font:inherit;font-family:var(--mono);font-size:.82rem;border:1.5px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:4px 8px;cursor:pointer}
+.edge-btns button[aria-pressed=true]{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);text-decoration:line-through}
+.pb-path{font-family:var(--mono);font-size:.92rem;margin-top:10px;min-height:1.5em}
+.found{display:grid;gap:4px;margin-top:8px;font-family:var(--mono);font-size:.88rem}
+.found div{color:var(--good);font-weight:700}
+
+/* Packets lab */
+button.packet{font:inherit;color:inherit;padding:0;text-align:left}
+.pool{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;min-height:70px}
+.pool .packet{cursor:pointer;transition:transform .12s,border-color .12s}
+.pool .packet:hover{transform:translateY(-2px);border-color:var(--s4)}
+.pool .packet.arrive{animation:arrive .6s ease}
+@keyframes arrive{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+.pool .packet.static{cursor:default}
+.pool .packet.static:hover{transform:none;border-color:var(--border)}
+.assembled{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:58px;border:1.5px dashed var(--border);border-radius:12px;padding:8px}
+.assembled .packet{border-color:var(--good)}
+.readout{font-family:var(--mono);font-size:1.05rem;font-weight:700;background:var(--surface-2);border-radius:10px;padding:10px 12px;margin-top:8px;white-space:pre-wrap;word-break:break-all}
+.req{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
+.req select{width:auto;min-width:70px;padding:6px 10px}
+.req.pulse{box-shadow:0 0 0 3px var(--s4)}
+.sub{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-top:14px}
+
+/* IP delivery */
+.devices{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));margin-top:10px}
+.device{font:inherit;text-align:left;border:1.5px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:10px 12px;cursor:pointer}
+.device .dn{font-weight:750;display:block}
+.device .ip{font-family:var(--mono);font-size:.88rem;color:var(--muted)}
+.device.right{border-color:var(--good);background:var(--good-soft)}
+.device.wrong{border-color:var(--bad);background:var(--bad-soft)}
+
+/* Station footer */
+.station-foot{margin-top:24px}
+.done-banner{display:none;background:var(--good-soft);border:1.5px solid var(--good);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.done-banner.on{display:block}
+.done-banner b{color:var(--good)}
+.foot-nav{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+
+/* Mastery */
+.mq-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.mq-top .bar{max-width:260px}
+.score-big{font-size:2.6rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px}
+.rcell{border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:.86rem}
+.rcell.ok{border-color:var(--good);background:var(--good-soft)}
+.rcell.no{border-color:var(--bad);background:var(--bad-soft)}
+.rcell b{display:block}
+.rtable td,.rtable th{font-size:.92rem}
+
+/* Report */
+.report-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.95rem;margin-top:8px}
+.kv dt{color:var(--muted);font-weight:700}
+.kv dd{margin:0}
+.refl label{display:block;font-weight:700;margin:12px 0 6px}
+.print-only{display:none}
+
+
+/* Saved-progress badge on finished activities */
+.wdone{display:inline-flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--good);background:var(--good-soft);border-radius:99px;padding:2px 10px;margin-bottom:8px}
+.welcome{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;background:var(--accent-soft);border-radius:12px;padding:10px 14px;margin-top:12px;font-size:.95rem}
+.fields{display:flex;flex-wrap:wrap;gap:12px}
+.fields .field{flex:1 1 220px;max-width:360px}
+.fields .field.sm{flex:0 1 160px}
+.howto{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:0;padding:0;list-style:none;counter-reset:how}
+.howto li{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;counter-increment:how}
+.howto li::before{content:counter(how);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--text);color:var(--surface);font-weight:700;font-size:.85rem;margin-bottom:6px}
+.howto b{display:block}
+.lockcard{display:flex;gap:14px;align-items:flex-start}
+.lockcard svg{flex:0 0 28px;width:28px;height:28px;color:var(--muted)}
+.st-list{display:grid;gap:6px;margin:10px 0 0}
+.st-list a{display:flex;justify-content:space-between;gap:10px;text-decoration:none;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:.94rem}
+.st-list a .s{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.st-list a.ok{border-color:var(--good);background:var(--good-soft)}
+.st-list a.ok .s{color:var(--good);font-weight:700}
+
+.start-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
+.start-grid .card{margin:0}
+.cp-code{font-family:var(--mono);font-weight:600;font-size:1.25rem;letter-spacing:.04em;background:var(--surface);border:1.5px dashed var(--good);border-radius:8px;padding:4px 12px;display:inline-block;user-select:all}
+.cp-box{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:8px}
+.foot-lock{background:var(--surface-2);border-radius:12px;padding:12px 14px;margin-bottom:12px;color:var(--muted)}
+.btn.is-locked{opacity:.5;pointer-events:none}
+.teacher-bar{background:var(--warn-soft);color:var(--warn);font-weight:600;font-size:.88rem;padding:6px 0}
+.teacher-bar .wrap{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.scard.locked{opacity:.6}
+.scard .badge.lock{background:var(--surface-2);color:var(--muted)}
+.lookup{border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:14px 0}
+.lookup h4{margin-bottom:2px}
+.lu-grid{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));margin-top:10px}
+.lu-grid div{border:1px solid var(--border);border-radius:10px;padding:8px 12px;display:grid;gap:2px}
+.lu-grid .k{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.lu-grid .c{font-family:var(--mono);font-weight:600;font-size:1.1rem;user-select:all}
+.lu-grid .n{font-size:.85rem;color:var(--muted)}
+.review-item{border-top:1px solid var(--border);padding-top:14px;margin-top:14px}
+.review-item:first-of-type{border-top:0;margin-top:0;padding-top:0}
+
+/* Certificate */
+.cert{background:var(--cert-bg);border:6px double var(--accent);border-radius:6px;padding:10px;margin:0 0 14px;box-shadow:var(--shadow)}
+.cert-inner{border:1px solid var(--cert-rule);padding:28px 22px;text-align:center;display:grid;gap:6px}
+.cert-eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cert-title{font-family:var(--serif);font-weight:600;font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.cert-sub{font-family:var(--serif);font-style:italic;color:var(--muted)}
+.cert-name{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,5vw,2.6rem);line-height:1.2;padding:2px 0 8px;border-bottom:1.5px solid var(--cert-rule);max-width:560px;width:100%;margin:0 auto;overflow-wrap:anywhere}
+.cert-name.empty{color:var(--muted);font-style:italic;font-weight:400}
+.cert-body{margin:8px 0 4px}
+.cert-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:620px;width:100%;margin:6px auto}
+@media (max-width:520px){.cert-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cert-stats div{border:1px solid var(--cert-rule);border-radius:8px;padding:8px 6px;display:grid;gap:2px}
+.cert-stats .k{font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.cert-stats .v{font-size:1.35rem;font-weight:700;font-variant-numeric:tabular-nums}
+.cert-status{justify-self:center;font-weight:700;border-radius:99px;padding:6px 16px;margin:6px 0}
+.cert-status.ok{background:var(--good-soft);color:var(--good)}
+.cert-status.no{background:var(--warn-soft);color:var(--warn)}
+.cert-skills{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;max-width:680px;width:100%;margin:4px auto 0}
+@media (max-width:560px){.cert-skills{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cert-skills span{display:grid;gap:1px;font-size:.74rem;font-weight:600;line-height:1.25;border-radius:6px;padding:6px 4px;font-variant-numeric:tabular-nums}
+.cert-skills span b{font-size:.95rem}
+.cert-skills .y{background:var(--good-soft);color:var(--good)}
+.cert-skills .n{background:var(--bad-soft);color:var(--bad)}
+.cert-legend{font-size:.8rem;color:var(--muted)}
+.cert-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;border-top:1px solid var(--cert-rule);margin-top:10px;padding-top:12px;font-size:.9rem;text-align:left}
+.cert-foot .code{font-family:var(--mono);font-weight:600;letter-spacing:.03em;user-select:all}
+.submit-steps{margin:6px 0 0;padding-left:22px}
+.submit-steps li{margin:4px 0}
+
+/* Verify */
+.vres{margin-top:12px}
+.vgrid{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin-top:6px}
+.vgrid dt{color:var(--muted);font-weight:600}
+.vgrid dd{margin:0;font-variant-numeric:tabular-nums}
+textarea.mono{font-family:var(--mono);font-size:.88rem;min-height:130px}
+.vtable td,.vtable th{white-space:nowrap;font-variant-numeric:tabular-nums}
+.vtable td:first-child{white-space:normal}
+.ok-t{color:var(--good);font-weight:700}
+.no-t{color:var(--bad);font-weight:700}
+
+@media print{
+  header.top,.no-print,.view:not(#view-certificate){display:none !important}
+  #view-certificate{display:block !important}
+  #view-certificate > :not(#certBox),#certBox > :not(.cert){display:none !important}
+  body{background:#fff}
+  .cert{box-shadow:none;break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+
+</head>
+<body>
+<header class="top">
+  <div class="teacher-bar" id="teacherBar" hidden><div class="wrap"><span>Teacher mode: all sections unlocked</span><a href="#home">Teacher notes</a></div></div>
+  <div class="wrap">
+    <div class="top-row">
+      <div>
+        <div class="eyebrow">AP CSP · Unit 2 Review</div>
+        <h1>How the Internet Works</h1>
+      </div>
+      <div class="progress" title="Overall progress">
+        <div class="bar"><span id="overallBar"></span></div>
+        <span class="lbl" id="overallTxt">0% complete</span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="Sections"></nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= HOME ================= -->
+<section class="view" id="view-home">
+  <div class="card hero">
+    <div class="eyebrow">AP CSP · Unit 2: The Internet · About 45 minutes</div>
+    <h2>Turn your Unit 2 test into mastery</h2>
+    <p>This optional review can raise your Unit 2 test grade. Each station <b>teaches</b> one topic, gives you <b>hands-on practice</b>, and <b>explains every wrong answer</b>. Finish all six stations, pass the Mastery Check, and earn a <b>certificate</b> to turn in.</p>
+  </div>
+
+  <div class="start-grid">
+    <div class="card" id="startCard">
+      <h3 style="margin-bottom:4px">Start here</h3>
+      <p class="muted">Use your full name exactly as it appears in Google Classroom. Your checkpoint codes are tied to it, so type it the same way every time.</p>
+      <div class="fields">
+        <label class="field"><span>Full name</span><input id="nameInput" type="text" autocomplete="name" placeholder="First and last name"></label>
+        <label class="field sm"><span>Class period</span><input id="periodInput" type="text" placeholder="e.g. 7"></label>
+      </div>
+      <div class="btn-row"><button type="button" class="btn btn-primary" id="startBtn">Start Station 1</button></div>
+      <div class="fbox" id="startMsg" aria-live="polite"></div>
+      <div id="welcome"></div>
+    </div>
+    <div class="card" id="resumeCard">
+      <h3 style="margin-bottom:4px">Coming back?</h3>
+      <p class="muted">If the page reloaded or you switched computers, enter your name and your <b>latest checkpoint code</b> to jump back to where you were.</p>
+      <div class="fields">
+        <label class="field"><span>Full name</span><input id="resName" type="text" autocomplete="name" placeholder="Same name as before"></label>
+        <label class="field"><span>Checkpoint code</span><input id="resCode" type="text" placeholder="e.g. P3-7KQ2" style="font-family:var(--mono)" autocapitalize="characters"></label>
+      </div>
+      <div class="btn-row"><button type="button" class="btn btn-primary" id="resBtn">Continue</button></div>
+      <div class="fbox" id="resMsg" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <h3 class="step"><span>1</span>How it works</h3>
+  <ol class="howto">
+    <li><b>Do the six stations in order</b>Each station unlocks when you finish the one before it. A station is done when every activity and check question in it is complete.</li>
+    <li><b>Write down each checkpoint code</b>You get a new code at the end of every station. If the page reloads, enter your name and your latest code above to pick up where you left off.</li>
+    <li><b>Pass the Mastery Check</b>15 questions covering all six topics. <b>You need 12 out of 15 (80%) to pass.</b> You can retry, but after 3 tries without passing you'll do a quick review first.</li>
+    <li><b>Turn in your certificate</b>It shows your name, your first and best scores, and a verification code. Upload it to Google Classroom.</li>
+  </ol>
+
+  <h3 class="step"><span>2</span>Your progress</h3>
+  <div class="card" id="cpCard"></div>
+  <div class="stations" id="stationCards"></div>
+
+  <h3 class="step"><span>3</span>Mastery Check &amp; certificate</h3>
+  <div class="card" id="homeMastery"></div>
+
+  <details class="card teacher no-print" id="teacherAccess">
+    <summary>Teacher access</summary>
+    <div class="fields" style="margin-top:6px"><label class="field"><span>Teacher code</span><input id="tCode" type="text" autocomplete="off" style="font-family:var(--mono)"></label></div>
+    <div class="btn-row"><button type="button" class="btn" id="tBtn">Unlock</button></div>
+    <div class="fbox" id="tMsg" aria-live="polite"></div>
+  </details>
+
+  <div class="card teacher" id="teacherNotes" hidden>
+    <h3 style="margin-bottom:8px">Teacher notes &amp; College Board alignment</h3>
+    <ul>
+      <li><b>Teacher mode is on:</b> every station, the Mastery Check, and the certificate checker are unlocked on this device until the page reloads. Students never see these notes.</li>
+      <li><b>Verify certificates:</b> <a href="#verify">open the certificate checker</a>. Enter a student's name and verification code, or paste a whole list, to confirm the scores are real. Each code is tied to the student's name and records their stations, first-attempt score, best score, number of attempts, results by topic, and when it was issued.</li>
+      <li><b>Flow:</b> stations unlock in order. Each station ends with a checkpoint code tied to the student's name; entering the name and latest code on the Start page restores their progress. The Mastery Check unlocks after Station 6. Passing is 12/15 (80%). Retakes are unlimited, but after 3 tries in a row without passing, the student must finish a quick review of their weakest topics before trying again. The certificate appears once they pass and shows both first-attempt and best scores.</li>
+      <li><b>Lost checkpoint code?</b> Use the lookup below. Type the student's name and you'll see their code for every station.</li>
+      <li><b>Test security:</b> none of the original test items appear here. Mastery Check and station questions are new items that assess the same Essential Knowledge.</li>
+      <li><b>Scope:</b> aligned to the AP CSP Course and Exam Description (CED), Topics 4.1 The Internet, 4.2 Fault Tolerance, and 5.2 Digital Divide. The CED excludes technical details of specific protocols, so this review focuses on <em>what</em> IP, TCP, UDP, and HTTP do. DNS is included because Code.org Lesson 6 teaches it; it supports scalability but is not its own CED Essential Knowledge statement.</li>
+      <li><b>Exam weight:</b> Big Idea 4 (Computer Systems and Networks) is 11–15% of the AP exam. Big Idea 5 (Impact of Computing, including the digital divide) is 21–26%.</li>
+      <li><b>Time:</b> about 45 minutes: roughly 5–7 minutes per station and 10 minutes for the Mastery Check.</li>
+    </ul>
+    <div class="lookup" id="lookup">
+      <h4>Look up a student's checkpoint codes</h4>
+      <p class="muted">Type the name exactly as the student typed it. Capitals and extra spaces don't matter, but spelling does.</p>
+      <div class="fields"><label class="field"><span>Student name</span><input id="luName" type="text" autocomplete="off" placeholder="First and last name"></label></div>
+      <div id="luOut" aria-live="polite"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl" id="alignTable">
+        <thead><tr><th>Station</th><th>Topics</th><th>CED Topic</th><th>Learning Objectives</th><th>Essential Knowledge</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="btn-row"><button type="button" class="btn" id="tExit">Exit teacher mode</button></div>
+  </div>
+</section>
+
+<!-- ================= LOCKED ================= -->
+<section class="view" id="view-locked">
+  <div id="lockedBox"></div>
+</section>
+
+<!-- ================= STATION 1 ================= -->
+<section class="view" id="view-s1" data-station="s1">
+  <div class="station-head" style="--sc:var(--s1)">
+    <div class="eyebrow">Station 1 · CED Topic 4.1</div>
+    <h2>Networks &amp; Paths</h2>
+    <div class="chips"><span class="chip ced">CSN-1.A</span><span class="chip ced">CSN-1.B.2</span></div>
+    <div class="sp"><div class="bar"><span data-spbar="s1"></span></div><span class="lbl" data-sptxt="s1"></span></div>
+  </div>
+
+  <div class="callout trap">
+    <div class="callout-title">Why this was tricky</div>
+    <p>Two things trip people up here. First, four words that sound alike: device, system, network, path. Second, questions that ask what is <em>NOT</em> needed, where the answer is the one that sounds most technical: "a single direct connection between two devices." Devices on the Internet are <b>not</b> wired straight to each other.</p>
+  </div>
+
+  <h3 class="step"><span>1</span>Learn it</h3>
+  <div class="card lesson">
+    <dl class="defs">
+      <div class="def"><dt>Computing device</dt><dd>A physical machine that can <b>run a program</b>. Examples: laptops, phones, servers, <b>routers</b>, smart sensors.</dd></div>
+      <div class="def"><dt>Computing system</dt><dd>A group of computing devices <b>and programs</b> working together for a <b>common purpose</b>.</dd></div>
+      <div class="def"><dt>Computing network</dt><dd>A group of <b>interconnected</b> computing devices that can <b>send or receive data</b>. A network is one type of computing system.</dd></div>
+      <div class="def"><dt>Path</dt><dd>The sequence of <b>directly connected</b> devices that starts at the sender and ends at the receiver.</dd></div>
+      <div class="def"><dt>Bandwidth</dt><dd>The <b>maximum amount of data</b> that can be sent in a fixed amount of time, usually measured in <b>bits per second</b>.</dd></div>
+    </dl>
+    <h4>The big idea: devices aren't wired to each other</h4>
+    <div class="pathstrip" aria-label="Example path from your phone to a friend's phone">
+      <span class="hop end">Your phone</span><span class="arrow">→</span><span class="hop">Wi‑Fi router</span><span class="arrow">→</span><span class="hop">ISP router</span><span class="arrow">→</span><span class="hop">Router</span><span class="arrow">→</span><span class="hop">Router</span><span class="arrow">→</span><span class="hop">Cell tower</span><span class="arrow">→</span><span class="hop end">Friend's phone</span>
+    </div>
+    <p class="caption">Each arrow is one <b>direct connection</b>, and the whole chain is the <b>path</b>. Your phone connects directly to just <b>one</b> part of the Internet (a Wi‑Fi router or cell tower). There is no single wire from you to your friend. To get online at all, a device just needs to connect to something that's already on the Internet.</p>
+    <div class="callout tip">
+      <div class="callout-title">Memory hooks</div>
+      <ul>
+        <li><b>Device</b> = can it run a program? (A router can. A cable can't.)</li>
+        <li><b>System</b> = devices + programs + a shared purpose.</li>
+        <li><b>Network</b> = devices connected so they can send and receive data.</li>
+        <li><b>Path</b> = the hops from sender to receiver.</li>
+        <li><b>Bandwidth</b> = the max amount of data per second (bits per second).</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="step"><span>2</span>Try it</h3>
+  <div class="card"><h4>Match the vocabulary</h4><p class="muted">Tap a word, then tap its definition.</p><div data-widget="match" data-id="s1-vocab"></div></div>
+  <div class="card"><h4>Computing device or not?</h4><p class="muted">Ask one question: can it run a program?</p><div data-widget="sort" data-id="s1-device"></div></div>
+  <div class="card"><h4>Build a path</h4><p class="muted">Jesse's phone needs to send a photo to a friend's laptop. Tap devices one at a time, starting at <b>Jesse</b>. You can only move along a line (a direct connection). Find <b>two different paths</b>.</p><div data-widget="pathb" data-id="s1-path"></div></div>
+
+  <h3 class="step"><span>3</span>Check yourself</h3>
+  <div class="card" data-widget="mcq" data-id="s1q1"></div>
+  <div class="card" data-widget="mcq" data-id="s1q2"></div>
+  <div class="station-foot" data-foot="s1"></div>
+</section>
+
+<!-- ================= STATION 2 ================= -->
+<section class="view" id="view-s2" data-station="s2">
+  <div class="station-head" style="--sc:var(--s2)">
+    <div class="eyebrow">Station 2 · CED Topic 4.1</div>
+    <h2>Protocols, IP Addresses &amp; Scalability</h2>
+    <div class="chips"><span class="chip ced">CSN-1.B</span><span class="chip ced">CSN-1.C.4</span></div>
+    <div class="sp"><div class="bar"><span data-spbar="s2"></span></div><span class="lbl" data-sptxt="s2"></span></div>
+  </div>
+
+  <div class="callout trap">
+    <div class="callout-title">Why this was tricky</div>
+    <p>The wrong answers sounded reasonable: "protocols are <b>secret</b> for security," "each <b>company</b> makes its own," "protocols are <b>changed every year</b>," "an IP address shows <b>where a device was made</b>." All four are false. Internet protocols are <b>open and shared</b>, and they were <b>designed to scale</b>.</p>
+  </div>
+
+  <h3 class="step"><span>1</span>Learn it</h3>
+  <div class="card lesson">
+    <p><b>Remember Lesson 3?</b> Scheduling with your group without talking was chaos until everyone agreed on the same rules. That agreement is a protocol.</p>
+    <dl class="defs">
+      <div class="def"><dt>Protocol</dt><dd>An <b>agreed-upon set of rules</b> that specify the behavior of a system.</dd></div>
+      <div class="def"><dt>Open protocols</dt><dd>Internet protocols are <b>open (nonproprietary)</b>: published for anyone to use and not owned by one company. That's why any company's device can connect.</dd></div>
+      <div class="def"><dt>IP address</dt><dd>The <b>unique number</b> assigned to each device on the Internet, so data can be sent to the right place.</dd></div>
+      <div class="def"><dt>Scalability</dt><dd>The capacity of a system to <b>change in size</b> to meet new demands. The Internet was <b>designed to be scalable</b>.</dd></div>
+    </dl>
+    <h4>Open vs. closed</h4>
+    <div class="two-col">
+      <div class="panel yes"><h5>✓ How the Internet actually works</h5><ul>
+        <li>Protocols are open and published</li>
+        <li>Every device follows the same shared rules</li>
+        <li>Any company can build a device that connects</li>
+        <li>New devices join without changing the rules, so the Internet scales</li></ul></div>
+      <div class="panel no"><h5>✗ Trap answers</h5><ul>
+        <li>"Protocols are kept secret for security"</li>
+        <li>"Each company uses its own protocol"</li>
+        <li>"The government designs a protocol for each device"</li>
+        <li>"Protocols are rewritten as new devices join"</li></ul></div>
+    </div>
+    <h4>An IP address works like a mailing address</h4>
+    <div class="envelope" aria-label="Example packet addressing">
+      <div class="hdr"><div><span class="k">TO</span>203.0.113.7</div><div><span class="k">FROM</span>198.51.100.24</div></div>
+      <div class="body">…the data being sent…</div>
+    </div>
+    <p class="caption">Routers read the destination IP address to forward data toward the right device. The address has to be <b>unique</b>, or the data wouldn't know where to go. It says nothing about who made the device or where it was built.</p>
+  </div>
+
+  <h3 class="step"><span>2</span>Try it</h3>
+  <div class="card"><h4>Deliver the packet</h4><div data-widget="ip" data-id="s2-ip"></div></div>
+  <div class="card"><h4>Myth or fact?</h4><p class="muted">Decide whether each statement is true.</p><div data-widget="sort" data-id="s2-myth"></div></div>
+
+  <h3 class="step"><span>3</span>Check yourself</h3>
+  <div class="card" data-widget="mcq" data-id="s2q1"></div>
+  <div class="card" data-widget="mcq" data-id="s2q2"></div>
+  <div class="station-foot" data-foot="s2"></div>
+</section>
+
+<!-- ================= STATION 3 ================= -->
+<section class="view" id="view-s3" data-station="s3">
+  <div class="station-head" style="--sc:var(--s3)">
+    <div class="eyebrow">Station 3 · CED Topics 4.1 &amp; 4.2</div>
+    <h2>Routing, Redundancy &amp; Fault Tolerance</h2>
+    <div class="chips"><span class="chip ced">CSN-1.A.6</span><span class="chip ced">CSN-1.B.5</span><span class="chip ced">CSN-1.E</span></div>
+    <div class="sp"><div class="bar"><span data-spbar="s3"></span></div><span class="lbl" data-sptxt="s3"></span></div>
+  </div>
+
+  <div class="callout trap">
+    <div class="callout-title">Why this was tricky</div>
+    <p>"Data always takes the shortest path" sounds logical, but Internet routing is <b>dynamic</b>, so data can take any available path. On minimum-cut questions, many students count only one device's connections, or stop at the first set of cuts that works. You need the <b>minimum</b>, so check both ends <b>and</b> the middle.</p>
+  </div>
+
+  <h3 class="step"><span>1</span>Learn it</h3>
+  <div class="card lesson">
+    <dl class="defs">
+      <div class="def"><dt>Routing</dt><dd>Finding a path from sender to receiver. On the Internet, routing is <b>dynamic</b>: it's <b>not decided in advance</b>, and different packets can take different paths.</dd></div>
+      <div class="def"><dt>Redundancy</dt><dd>Including <b>extra components</b>, like more than one path between two devices, so the system still works if some parts fail.</dd></div>
+      <div class="def"><dt>Fault tolerant</dt><dd>A system that can <b>keep working even when parts fail</b>. The Internet is fault tolerant <b>because</b> of redundancy.</dd></div>
+      <div class="def"><dt>The trade-off</dt><dd>Redundancy <b>costs more</b> (more equipment, money, and resources) but makes the network more <b>reliable</b> and helps it scale.</dd></div>
+    </dl>
+    <div class="mini-nets" id="miniNets"></div>
+    <div class="callout tip">
+      <div class="callout-title">The minimum-cut method</div>
+      <ol>
+        <li>Count the <b>sender's</b> direct connections.</li>
+        <li>Count the <b>receiver's</b> direct connections.</li>
+        <li>Look for a narrow <b>bridge in the middle</b>, where only a few lines join two groups of devices.</li>
+        <li>The <b>smallest</b> of these is your answer. Check it: after those cuts, can you still trace <em>any</em> path? If yes, keep looking.</li>
+      </ol>
+      <p style="margin-top:8px"><b>Pro check:</b> if you can find 3 paths that share <em>no</em> lines, you'll need at least 3 cuts, one per path.</p>
+    </div>
+  </div>
+
+  <h3 class="step"><span>2</span>Try it: Network Lab</h3>
+  <div class="card">
+    <p class="muted">Tap a line to <b>cut</b> it (tap again to repair it). Press <b>Send a packet</b> to watch routing in action: packets pick different paths, and they reroute around cuts. Your goal: disconnect the <b>sender</b> from the <b>receiver</b> using the <b>fewest cuts possible</b>.</p>
+    <div data-widget="netlab" data-id="s3-lab"></div>
+  </div>
+
+  <h3 class="step"><span>3</span>Check yourself</h3>
+  <div class="card" data-widget="mcq" data-id="s3q1"></div>
+  <div class="card" data-widget="mcq" data-id="s3q2"></div>
+  <div class="card" data-widget="mcq" data-id="s3q3"></div>
+  <div class="station-foot" data-foot="s3"></div>
+</section>
+
+<!-- ================= STATION 4 ================= -->
+<section class="view" id="view-s4" data-station="s4">
+  <div class="station-head" style="--sc:var(--s4)">
+    <div class="eyebrow">Station 4 · CED Topic 4.1</div>
+    <h2>Packets, TCP &amp; UDP</h2>
+    <div class="chips"><span class="chip ced">CSN-1.C</span></div>
+    <div class="sp"><div class="bar"><span data-spbar="s4"></span></div><span class="lbl" data-sptxt="s4"></span></div>
+  </div>
+
+  <div class="callout trap">
+    <div class="callout-title">Why this was tricky</div>
+    <p>Trap answers said metadata is only on "important" packets, or travels in its own separate packet, or that packets always arrive in order, or that it's "all or nothing." In reality, <b>every</b> packet carries its own metadata, and packets can arrive <b>in order, out of order, or not at all</b>.</p>
+  </div>
+
+  <h3 class="step"><span>1</span>Learn it</h3>
+  <div class="card lesson">
+    <dl class="defs">
+      <div class="def"><dt>Data stream &amp; packets</dt><dd>Information travels through the Internet as a <b>data stream</b>: chunks of data wrapped in <b>packets</b>. This happens to <b>all</b> data, big or small.</dd></div>
+      <div class="def"><dt>Packet metadata</dt><dd>Extra information on <b>each</b> packet, used to <b>route</b> it (sender and receiver IP addresses) and to <b>reassemble</b> the message (packet number).</dd></div>
+      <div class="def"><dt>Arrival</dt><dd>Each packet can take a different path, so packets may arrive <b>in order, out of order, or not at all</b>.</dd></div>
+    </dl>
+    <h4>Anatomy of a packet</h4>
+    <div class="anatomy">
+      <div class="packet big" aria-label="Example packet">
+        <div class="meta"><span>FROM 198.51.100.24</span><span>TO&nbsp;&nbsp; 203.0.113.7</span><span class="num">PACKET 3 OF 6</span></div>
+        <div class="data">VE OUT O</div>
+      </div>
+      <ul>
+        <li><b>Metadata</b> (gray): addresses tell routers where to send it. The packet number tells the receiver where it fits.</li>
+        <li><b>Data</b>: one small chunk of the message. In the Internet Simulator, that was 8 characters.</li>
+      </ul>
+    </div>
+    <h4>Three protocols to know</h4>
+    <div class="tbl-wrap"><table class="tbl stack">
+      <thead><tr><th>Protocol</th><th>Its job</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td>IP</td><td>Gives each device a unique address; each packet is addressed and routed toward its destination.</td><td>Every packet on the Internet</td></tr>
+        <tr><td>TCP</td><td>Numbers packets, checks they all arrived, puts them back in order, and <b>requests any missing ones</b>. Reliable but a bit slower.</td><td>Web pages, email, downloads, photos: anything that must be <b>complete and correct</b></td></tr>
+        <tr><td>UDP</td><td>Sends packets fast with <b>no checking and no resending</b>. Fast, but some data may be lost.</td><td>Video calls, live streams, online games: when <b>speed</b> matters more than perfection</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <h3 class="step"><span>2</span>Try it: Packet Lab</h3>
+  <div class="card"><h4>Round 1: "Just send it" (UDP-style)</h4><div data-widget="udp" data-id="s4-udp"></div></div>
+  <div class="card"><h4>Round 2: Rebuild it with TCP</h4><div data-widget="tcp" data-id="s4-tcp"></div></div>
+  <div class="card"><h4>TCP or UDP?</h4><p class="muted">Does this situation need <b>accuracy</b> (TCP) or <b>speed</b> (UDP)?</p><div data-widget="sort" data-id="s4-sort"></div></div>
+
+  <h3 class="step"><span>3</span>Check yourself</h3>
+  <div class="card" data-widget="mcq" data-id="s4q1"></div>
+  <div class="card" data-widget="mcq" data-id="s4q2"></div>
+  <div class="station-foot" data-foot="s4"></div>
+</section>
+
+<!-- ================= STATION 5 ================= -->
+<section class="view" id="view-s5" data-station="s5">
+  <div class="station-head" style="--sc:var(--s5)">
+    <div class="eyebrow">Station 5 · CED Topic 4.1</div>
+    <h2>The Web, HTTP &amp; DNS</h2>
+    <div class="chips"><span class="chip ced">CSN-1.D</span><span class="chip ced">CSN-1.C.4</span></div>
+    <div class="sp"><div class="bar"><span data-spbar="s5"></span></div><span class="lbl" data-sptxt="s5"></span></div>
+  </div>
+
+  <div class="callout trap">
+    <div class="callout-title">Why this was tricky</div>
+    <p>Protocol questions often list four similar-looking names. Give each one a job: <b>HTTP</b> = web pages, <b>TCP</b> = reliable packets, <b>UDP</b> = fast packets, <b>IP</b> = addresses. And remember that the <b>Internet</b> and the <b>World Wide Web</b> are not the same thing.</p>
+  </div>
+
+  <h3 class="step"><span>1</span>Learn it</h3>
+  <div class="card lesson">
+    <div class="two-col">
+      <div class="panel"><h5>The Internet</h5><p style="margin:0">The <b>network</b> itself: devices, routers, cables, Wi‑Fi, and the protocols that move data (IP, TCP, UDP).</p></div>
+      <div class="panel"><h5>The World Wide Web</h5><p style="margin:0">A <b>system of linked pages, programs, and files</b>. The Web <b>uses</b> the Internet to share them, through <b>HTTP</b>.</p></div>
+    </div>
+    <p class="caption">Think of the Internet as the roads and the Web as one delivery service that uses them. Email, video calls, and online games also use the Internet, but they aren't the Web.</p>
+    <dl class="defs">
+      <div class="def"><dt>HTTP</dt><dd><b>HyperText Transfer Protocol</b>: the protocol the Web uses to <b>request and send</b> pages and files. Your browser sends a <b>GET</b> request; the server sends the page back. <b>HTTPS</b> is the secure, encrypted version.</dd></div>
+      <div class="def"><dt>DNS</dt><dd>The <b>Domain Name System</b> translates names like <b>code.org</b> into IP addresses. It helps the Internet <b>scale</b>, so no one has to memorize billions of addresses. <span class="muted">(From Code.org Lesson 6. The AP exam focuses on HTTP and on the Internet vs. the Web.)</span></dd></div>
+    </dl>
+    <h4>Layers of the Internet: how they work together</h4>
+    <div class="stack">
+      <div class="layer"><b>HTTP</b><span>Asks for the web page and sends it back (the Web)</span></div>
+      <div class="layer"><b>TCP / UDP</b><span>Breaks data into packets; TCP makes sure none are missing</span></div>
+      <div class="layer"><b>IP</b><span>Addresses every packet and routes it across the network</span></div>
+      <div class="layer"><b>Physical</b><span>Wi‑Fi, cables, fiber, cell towers carry the bits</span></div>
+    </div>
+  </div>
+
+  <h3 class="step"><span>2</span>Try it</h3>
+  <div class="card"><h4>Protocol job match</h4><p class="muted">Tap a protocol, then tap its job.</p><div data-widget="match" data-id="s5-proto"></div></div>
+  <div class="card"><h4>What happens when you visit code.org?</h4><p class="muted">Tap the steps in the order they happen.</p><div data-widget="order" data-id="s5-order"></div></div>
+
+  <h3 class="step"><span>3</span>Check yourself</h3>
+  <div class="card" data-widget="mcq" data-id="s5q1"></div>
+  <div class="card" data-widget="mcq" data-id="s5q2"></div>
+  <div class="station-foot" data-foot="s5"></div>
+</section>
+
+<!-- ================= STATION 6 ================= -->
+<section class="view" id="view-s6" data-station="s6">
+  <div class="station-head" style="--sc:var(--s6)">
+    <div class="eyebrow">Station 6 · CED Topic 5.2</div>
+    <h2>The Digital Divide</h2>
+    <div class="chips"><span class="chip ced">IOC-1.C</span></div>
+    <div class="sp"><div class="bar"><span data-spbar="s6"></span></div><span class="lbl" data-sptxt="s6"></span></div>
+  </div>
+
+  <div class="callout trap">
+    <div class="callout-title">Why this was tricky</div>
+    <p>Several wrong answers were about <b>technology problems</b>: packets out of order, devices far apart, different brands of devices. The digital divide isn't about machines. It's about <b>people</b> having unequal <b>access</b>.</p>
+  </div>
+
+  <h3 class="step"><span>1</span>Learn it</h3>
+  <div class="card lesson">
+    <dl class="defs" style="grid-template-columns:1fr">
+      <div class="def"><dt>Digital divide</dt><dd><b>Differing access</b> to computing devices and the Internet, based on <b>socioeconomic, geographic, or demographic</b> characteristics.</dd></div>
+    </dl>
+    <div class="factors">
+      <div class="factor"><div class="ft">Socioeconomic</div>Money and income. Can a family afford a laptop or a monthly Internet plan?</div>
+      <div class="factor"><div class="ft">Geographic</div>Location. Some rural areas have no high-speed Internet available at all.</div>
+      <div class="factor"><div class="ft">Demographic</div>Groups of people. Access can differ by age, race or ethnicity, disability, and more.</div>
+    </div>
+    <ul>
+      <li>It affects both <b>individuals and groups</b>, both locally and globally.</li>
+      <li>It raises issues of <b>equity, access, and influence</b>. People without access have less say in a world that runs online.</li>
+      <li>The actions of <b>individuals, organizations, and governments</b> can make it wider or narrower.</li>
+    </ul>
+    <div class="callout tip">
+      <div class="callout-title">The PEOPLE + ACCESS test</div>
+      <p>Before choosing a digital divide answer, ask: <b>(1) Is it about people?</b> <b>(2) Is it about unequal access to devices or the Internet?</b> If an answer is about packets, routers, distance, or device brands, it's a distractor.</p>
+      <p><b>Red flag:</b> anything important offered <b>"online only"</b> (voter registration, job applications, homework, permits) creates a digital divide problem for people without access.</p>
+    </div>
+  </div>
+
+  <h3 class="step"><span>2</span>Try it</h3>
+  <div class="card"><h4>Widen, narrow, or neither?</h4><p class="muted">Does each situation widen the digital divide, narrow it, or have nothing to do with it?</p><div data-widget="sort" data-id="s6-sort"></div></div>
+
+  <h3 class="step"><span>3</span>Check yourself</h3>
+  <div class="card" data-widget="mcq" data-id="s6q1"></div>
+  <div class="card" data-widget="mcq" data-id="s6q2"></div>
+  <div class="station-foot" data-foot="s6"></div>
+</section>
+
+<!-- ================= MASTERY ================= -->
+<section class="view" id="view-mastery">
+  <div class="station-head" style="--sc:var(--accent)">
+    <div class="eyebrow">Final step</div>
+    <h2>Mastery Check</h2>
+    <p class="muted" style="margin:0">15 questions covering all six topics. You need 12 to pass. One try per question, and read the explanation after every answer, even when you get it right.</p>
+  </div>
+  <div id="masteryBox" style="margin-top:14px"></div>
+</section>
+
+<!-- ================= CERTIFICATE ================= -->
+<section class="view" id="view-certificate">
+  <div id="certBox"></div>
+</section>
+
+<!-- ================= VERIFY (teacher) ================= -->
+<section class="view" id="view-verify">
+  <div class="station-head" style="--sc:var(--accent)">
+    <div class="eyebrow">For teachers</div>
+    <h2>Verify a certificate</h2>
+    <p class="muted" style="margin:0">Each verification code is tied to the student's name. A code that was copied from someone else, or a certificate that was edited, won't match. Capitalization and spaces in the name don't matter.</p>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h4>Check one certificate</h4>
+    <div class="fields" style="margin-top:8px">
+      <label class="field"><span>Student name (as printed on the certificate)</span><input id="vName" type="text" placeholder="First and last name"></label>
+      <label class="field"><span>Verification code</span><input id="vCode" type="text" placeholder="U2-XXXX-XXXX-XXXX-XXXX" style="font-family:var(--mono)"></label>
+    </div>
+    <div class="btn-row"><button type="button" class="btn btn-primary" id="vBtn">Verify</button></div>
+    <div class="vres" id="vOne" aria-live="polite"></div>
+  </div>
+  <div class="card">
+    <h4>Check a whole class</h4>
+    <p class="muted">Paste one student per line: the name, then the code. Separate them with a tab or a comma (you can paste two columns straight from a spreadsheet).</p>
+    <textarea id="vList" class="mono" placeholder="Jordan Lee, U2-XXXX-XXXX-XXXX-XXXX&#10;Maria Garcia	U2-XXXX-XXXX-XXXX-XXXX"></textarea>
+    <div class="btn-row"><button type="button" class="btn btn-primary" id="vListBtn">Verify list</button><button type="button" class="btn" id="vCopy" hidden>Copy results for a spreadsheet</button></div>
+    <div class="vres" id="vMany" aria-live="polite"></div>
+  </div>
+</section>
+
+</main>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   CONTENT DATA
+   ============================================================ */
+const STATIONS = [
+  {id:'s1', n:1, title:'Networks & Paths', color:'var(--s1)', tq:[1,3], blurb:'Device vs. system vs. network, paths, bandwidth.'},
+  {id:'s2', n:2, title:'Protocols, IP Addresses & Scalability', color:'var(--s2)', tq:[2,6,9], blurb:'Why open protocols and unique addresses let the Internet grow.'},
+  {id:'s3', n:3, title:'Routing, Redundancy & Fault Tolerance', color:'var(--s3)', tq:[4,5,12,13], blurb:'Cut connections in a live network and watch packets reroute.'},
+  {id:'s4', n:4, title:'Packets, TCP & UDP', color:'var(--s4)', tq:[7,8,10], blurb:'Rebuild a scrambled message using packet metadata.'},
+  {id:'s5', n:5, title:'The Web, HTTP & DNS', color:'var(--s5)', tq:[11], blurb:'Internet vs. Web, and what happens when you load a page.'},
+  {id:'s6', n:6, title:'The Digital Divide', color:'var(--s6)', tq:[14,15], blurb:'Spot real access issues and skip the tech distractors.'}
+];
+
+/* Test question -> skill + alignment (for recommendations and the teacher table) */
+const TESTQ = {
+  1:{skill:'Network vocabulary', st:'s1', topic:'4.1', lo:'CSN-1.A', ek:'CSN-1.A.1, A.2, A.3, A.5'},
+  2:{skill:'Open protocols', st:'s2', topic:'4.1', lo:'CSN-1.B', ek:'CSN-1.B.1, B.3, B.4'},
+  3:{skill:'Paths & direct connections', st:'s1', topic:'4.1', lo:'CSN-1.A, CSN-1.B', ek:'CSN-1.A.5, B.2, B.4'},
+  4:{skill:'Minimum connections to cut', st:'s3', topic:'4.2', lo:'CSN-1.E', ek:'CSN-1.E.2, E.3, E.4'},
+  5:{skill:'How data is routed', st:'s3', topic:'4.1 / 4.2', lo:'CSN-1.A, CSN-1.B', ek:'CSN-1.A.6, B.5, E.4'},
+  6:{skill:'Scalability', st:'s2', topic:'4.1', lo:'CSN-1.B', ek:'CSN-1.B.6, B.7'},
+  7:{skill:'Packet metadata', st:'s4', topic:'4.1', lo:'CSN-1.C', ek:'CSN-1.C.1, C.2'},
+  8:{skill:'Packet arrival order', st:'s4', topic:'4.1', lo:'CSN-1.C', ek:'CSN-1.C.3'},
+  9:{skill:'IP addresses', st:'s2', topic:'4.1', lo:'CSN-1.B, CSN-1.C', ek:'CSN-1.B.1, C.2, C.4'},
+  10:{skill:'TCP', st:'s4', topic:'4.1', lo:'CSN-1.C', ek:'CSN-1.C.3, C.4'},
+  11:{skill:'HTTP & the Web', st:'s5', topic:'4.1', lo:'CSN-1.D', ek:'CSN-1.D.1, D.2, D.3'},
+  12:{skill:'Fault tolerance', st:'s3', topic:'4.2', lo:'CSN-1.E', ek:'CSN-1.E.4, E.5'},
+  13:{skill:'Why add redundancy', st:'s3', topic:'4.2', lo:'CSN-1.E', ek:'CSN-1.E.2, E.6, E.7'},
+  14:{skill:'Digital divide situations', st:'s6', topic:'5.2', lo:'IOC-1.C', ek:'IOC-1.C.1, C.2, C.3'},
+  15:{skill:'Digital divide effects', st:'s6', topic:'5.2', lo:'IOC-1.C', ek:'IOC-1.C.2, C.4, C.5'}
+};
+
+/* ---------- Network graphs (min cuts verified) ---------- */
+const GRAPHS = {
+  p1:{w:500,h:320,s:'A',t:'F',
+      nodes:{A:[60,160],B:[185,70],C:[185,250],D:[315,70],E:[315,250],F:[440,160]},
+      edges:[['A','B'],['A','C'],['B','C'],['B','D'],['C','E'],['D','E'],['D','F'],['E','F']]},
+  p2:{w:520,h:320,s:'A',t:'H',
+      nodes:{A:[50,160],B:[150,65],C:[150,255],D:[240,160],E:[330,65],F:[330,255],G:[400,160],H:[475,160]},
+      edges:[['A','B'],['A','C'],['A','D'],['B','D'],['C','D'],['B','E'],['C','F'],['E','G'],['F','G'],['E','H'],['F','H'],['G','H']]},
+  p3:{w:520,h:340,s:'A',t:'I',
+      nodes:{A:[50,170],B:[150,60],C:[150,170],D:[150,280],E:[270,110],F:[270,230],G:[385,55],H:[385,285],I:[475,170]},
+      edges:[['A','B'],['A','C'],['A','D'],['B','C'],['C','D'],['B','E'],['C','E'],['C','F'],['D','F'],['E','F'],['E','G'],['F','H'],['G','I'],['H','I'],['E','I'],['F','I']]},
+  m4:{w:480,h:300,s:'P',t:'V',
+      nodes:{P:[60,150],Q:[175,55],R:[175,150],S:[175,245],T:[305,90],U:[305,210],V:[420,150]},
+      edges:[['P','Q'],['P','R'],['P','S'],['Q','R'],['R','S'],['Q','T'],['R','T'],['R','U'],['S','U'],['T','U'],['T','V'],['U','V']]},
+  q5:{w:500,h:300,s:'P',t:'T',
+      nodes:{P:[60,165],Q:[185,75],R:[185,255],S:[320,75],U:[320,255],T:[445,165],V:[445,40]},
+      edges:[['P','Q'],['P','R'],['Q','R'],['Q','S'],['R','U'],['S','U'],['S','T'],['U','T'],['S','V']]},
+  pb:{w:720,h:300,s:'phone',t:'laptop',r:30,
+      nodes:{phone:[50,150],tower:[150,150],r1:[260,150],r2:[370,60],r3:[370,240],r4:[480,150],wifi:[585,150],laptop:[680,150]},
+      labels:{phone:'Jesse',tower:'Tower',r1:'R1',r2:'R2',r3:'R3',r4:'R4',wifi:'Wi‑Fi',laptop:'Friend'},
+      edges:[['phone','tower'],['tower','r1'],['r1','r2'],['r1','r3'],['r2','r3'],['r2','r4'],['r3','r4'],['r4','wifi'],['wifi','laptop']]},
+  pbv:{w:300,h:650,s:'phone',t:'laptop',r:30,roleRight:true,
+      nodes:{phone:[150,40],tower:[150,130],r1:[150,225],r2:[65,315],r3:[235,315],r4:[150,405],wifi:[150,495],laptop:[150,595]},
+      labels:{phone:'Jesse',tower:'Tower',r1:'R1',r2:'R2',r3:'R3',r4:'R4',wifi:'Wi‑Fi',laptop:'Friend'},
+      edges:[['phone','tower'],['tower','r1'],['r1','r2'],['r1','r3'],['r2','r3'],['r2','r4'],['r3','r4'],['r4','wifi'],['wifi','laptop']]},
+  miniA:{w:300,h:120,s:'A',t:'C',nodes:{A:[40,60],B:[150,60],C:[260,60]},edges:[['A','B'],['B','C']]},
+  miniB:{w:300,h:120,s:'A',t:'C',nodes:{A:[40,60],B:[150,22],D:[150,98],C:[260,60]},edges:[['A','B'],['B','C'],['A','D'],['D','C']]}
+};
+
+const PUZZLES = [
+  {g:'p1', name:'Puzzle 1: Warm-up',
+   goal:'Disconnect <b>A</b> (sender) from <b>F</b> (receiver) with the fewest cuts.',
+   hint:'Count how many lines touch A. Now count the lines touching F. Which number is smaller?'},
+  {g:'p2', name:'Puzzle 2: Find the bridge',
+   goal:'Disconnect <b>A</b> from <b>H</b>. Both have 3 connections, but can you do better?',
+   hint:'Look at the middle. The left group (A, B, C, D) and the right group (E, F, G, H) are joined by only a few lines.'}
+];
+
+/* ---------- Matching ---------- */
+const MATCHES = {
+  's1-vocab':{pairs:[
+    ['Computing device','A physical machine that can run a program'],
+    ['Computing system','A group of computing devices and programs working together for a common purpose'],
+    ['Computing network','A group of interconnected computing devices capable of sending or receiving data'],
+    ['Path','A sequence of directly connected devices from a sender to a receiver'],
+    ['Bandwidth','The maximum amount of data that can be sent in a fixed amount of time']
+  ], hints:{
+    'Computing device':'A device is ONE machine. Key words: "run a program."',
+    'Computing system':'A system is about working together for a purpose. Key words: "devices and programs."',
+    'Computing network':'A network is about being connected. Key words: "sending or receiving data."',
+    'Path':'A path is the route. Key words: "directly connected … sender to receiver."',
+    'Bandwidth':'Bandwidth is a measurement. Key words: "amount of data … fixed amount of time."'
+  }},
+  's5-proto':{pairs:[
+    ['IP','Gives each device a unique address and routes packets toward it'],
+    ['TCP','Numbers packets, checks they all arrived, and requests missing ones'],
+    ['UDP','Sends packets quickly with no checking or resending'],
+    ['HTTP','Requests and sends web pages and files on the World Wide Web'],
+    ['DNS','Translates domain names like code.org into IP addresses']
+  ], hints:{
+    'IP':'IP = Internet Protocol. Think "IP address."',
+    'TCP':'TCP is the careful one. It makes sure nothing is missing.',
+    'UDP':'UDP is the fast one. No double-checking.',
+    'HTTP':'HTTP = HyperText Transfer Protocol. It\'s what the Web uses for pages.',
+    'DNS':'DNS = Domain Name System. It works like a phone book for websites.'
+  }}
+};
+
+/* ---------- Sorters ---------- */
+const SORTS = {
+  's1-device':{cats:[['yes','Computing device'],['no','Not a computing device']], items:[
+    {t:'A Wi‑Fi router', c:'yes', why:'A router is a computer that runs a program to forward data. That\'s why routers appear in the CED\'s list of computing devices.'},
+    {t:'An Ethernet cable', c:'no', why:'A cable only carries signals. It can\'t run a program.'},
+    {t:'A smart doorbell with a motion sensor', c:'yes', why:'Smart sensors run programs. The CED lists them as computing devices.'},
+    {t:'A fiber-optic line under the ocean', c:'no', why:'It carries data as light, but it can\'t run a program.'}
+  ]},
+  's2-myth':{cats:[['fact','Fact'],['myth','Myth']], items:[
+    {t:'Internet protocols are kept secret so hackers can\'t learn them.', c:'myth', why:'Internet protocols are open and published so anyone can build devices that follow them. Security comes from things like encryption, not from secret protocols.'},
+    {t:'Each company that makes devices uses its own special Internet protocol.', c:'myth', why:'If every company had its own rules, devices couldn\'t understand each other. Everyone follows the same shared protocols.'},
+    {t:'An IP address is a unique number that identifies a device on the Internet.', c:'fact', why:'Like a mailing address, it lets data be delivered to the right device.'},
+    {t:'An IP address tells you which factory built the device.', c:'myth', why:'IP addresses identify devices for sending and receiving data. They say nothing about where a device was made.'},
+    {t:'A protocol is an agreed-upon set of rules that specify the behavior of a system.', c:'fact', why:'That\'s the CED definition. Your scheduling activity only worked once the group agreed on rules.'},
+    {t:'The Internet\'s protocols must be changed whenever lots of new devices join.', c:'myth', why:'The Internet was designed to be scalable, so the same protocols keep working as it grows.'}
+  ]},
+  's4-sort':{cats:[['tcp','TCP (accuracy)'],['udp','UDP (speed)']], items:[
+    {t:'Downloading an app update', c:'tcp', why:'Every piece of the app must be correct. A missing packet could break it.'},
+    {t:'Live-streaming a basketball game', c:'udp', why:'A tiny glitch is better than the stream pausing to wait for old packets.'},
+    {t:'Sending an email with a PDF attached', c:'tcp', why:'The file has to arrive complete and in order.'},
+    {t:'A video call with your grandma', c:'udp', why:'It\'s a real-time conversation. Waiting to resend old video would cause lag.'},
+    {t:'Player positions in a fast online game', c:'udp', why:'By the time an old position was resent, it would be out of date. Only the newest update matters.'}
+  ]},
+  's5-sort':{cats:[['net','The Internet'],['web','The World Wide Web']], items:[
+    {t:'Routers and fiber-optic cables', c:'net', why:'Hardware that connects devices is part of the Internet, the network itself.'},
+    {t:'A Wikipedia article with links to other articles', c:'web', why:'Linked pages are exactly what the World Wide Web is.'},
+    {t:'IP addresses', c:'net', why:'IP is a core protocol of the Internet. It addresses and routes all packets, not just web pages.'},
+    {t:'HTTP', c:'web', why:'HTTP is the protocol the World Wide Web uses to request and send pages.'},
+    {t:'Wi‑Fi and cell towers', c:'net', why:'These are the connections that make up the network.'},
+    {t:'A school website and the pages it links to', c:'web', why:'A site of linked pages and files is part of the Web.'},
+    {t:'TCP and UDP packets', c:'net', why:'Packets are how all data moves across the Internet.'}
+  ]},
+  's6-sort':{cats:[['widen','Widens the divide'],['narrow','Narrows the divide'],['none','Not a digital divide issue']], items:[
+    {t:'A city requires parking permits to be applied for online only.', c:'widen', why:'People without a device or Internet access can\'t easily get a permit. "Online only" is a red flag.'},
+    {t:'A public library lends free Wi‑Fi hotspots and laptops.', c:'narrow', why:'When an organization gives more people access, the divide narrows.'},
+    {t:'Packets from a web server arrive out of order.', c:'none', why:'That\'s normal network behavior. It has nothing to do with people\'s access.'},
+    {t:'A rural area has no high-speed Internet provider.', c:'widen', why:'Geography affects access. This is a classic digital divide example.'},
+    {t:'The government pays part of the Internet bill for low-income families.', c:'narrow', why:'Government actions can reduce the divide by making access more affordable.'},
+    {t:'A laptop in California sends a message to a server in Germany.', c:'none', why:'Distance between devices isn\'t the digital divide. The Internet handles this every second.'}
+  ]}
+};
+
+/* ---------- Ordering ---------- */
+const ORDERS = {
+  's5-order':{steps:[
+    {t:'You type code.org into the browser and press Enter.', no:'Start at the very beginning: what does YOU do first?'},
+    {t:'DNS translates "code.org" into the server\'s IP address.', no:'Your browser can\'t contact the server until it knows the server\'s address.'},
+    {t:'Your browser creates an HTTP GET request for the page.', no:'The browser needs the IP address (from DNS) before it can request the page.'},
+    {t:'The request is split into packets, each with metadata including the sender\'s and receiver\'s IP addresses.', no:'Packets are made from a message. What message does the browser need to create first?'},
+    {t:'Routers forward each packet along a path to the code.org server. Packets may take different paths.', no:'Routers can only forward packets that have been created.'},
+    {t:'The server sends back the web page (the HTTP response), also split into packets.', no:'The server can\'t respond until the request packets reach it.'},
+    {t:'TCP puts the packets in order, gets any missing ones resent, and the browser displays the page.', no:'This is the last step. Packets have to come back from the server first.'}
+  ]}
+};
+
+/* ---------- Station MCQs (unlimited tries, feedback on every choice) ---------- */
+const MCQ = {
+  s1q1:{tag:'Paths & connections', stem:'Maria unboxes a brand-new laptop at a café and immediately video-chats with her cousin in another state. Which of the following is <b>NOT</b> necessary for this to work?', opts:[
+    {t:'Maria\'s laptop is connected to an Internet-connected device, like the café\'s Wi‑Fi router.', fb:'This IS necessary. To get on the Internet, a device must connect to something already on the Internet (CSN-1.B.2).'},
+    {t:'The video data travels along a path of directly connected devices.', fb:'This IS necessary. It\'s exactly how data crosses the Internet, hop by hop along a path.'},
+    {t:'Maria\'s laptop has a single direct connection to her cousin\'s device.', ok:true, fb:'Correct! Maria\'s laptop is NOT connected straight to her cousin\'s device. It connects to one part of the Internet, and the data is routed through many devices to reach her cousin.'},
+    {t:'Both devices follow the same open Internet protocols.', fb:'This IS necessary. Shared, open protocols are what let devices from different companies understand each other.'}]},
+  s1q2:{tag:'Systems vs. networks', stem:'Which of the following best describes the relationship between a computing network and a computing system?', opts:[
+    {t:'A computing network is a type of computing system.', ok:true, fb:'Correct. A network is a group of connected devices sending and receiving data, which is one kind of system of devices and programs working together (CSN-1.A.4).'},
+    {t:'A computing system can only contain one device.', fb:'No. A computing system is a GROUP of devices and programs working together.'},
+    {t:'A computing network can only contain desktop computers.', fb:'No. Any computing device can be on a network: phones, routers, servers, smart sensors, and more.'},
+    {t:'Computing systems and computing networks are unrelated ideas.', fb:'They\'re closely related: every computing network is a computing system.'}]},
+  s1q3:{tag:'Bandwidth', stem:'A school\'s network can move at most 500 megabits of data every second. This measurement describes the network\'s…', opts:[
+    {t:'bandwidth', ok:true, fb:'Correct. Bandwidth is the maximum amount of data that can be sent in a fixed amount of time, usually measured in bits per second.'},
+    {t:'path', fb:'A path is a sequence of connected devices, not an amount of data per second.'},
+    {t:'protocol', fb:'A protocol is a set of rules, not a measurement.'},
+    {t:'redundancy', fb:'Redundancy means extra components or paths used as backups. It isn\'t a speed.'}]},
+
+  s2q1:{tag:'Open protocols', stem:'A small startup is designing a new smartwatch that needs to send data over the Internet. What does the company need to do so the watch can communicate with devices made by other companies?', opts:[
+    {t:'Invent its own secret protocol so hackers can\'t read it.', fb:'With a secret, one-company protocol, no one else\'s devices could understand the watch. Internet protocols are open.'},
+    {t:'Follow the same open, standardized protocols that other Internet devices use.', ok:true, fb:'Correct! Because Internet protocols are open (nonproprietary), any company can build a device that follows them and connects (CSN-1.B.4).'},
+    {t:'Ask the government to design a new protocol for smartwatches.', fb:'Governments don\'t design a protocol for each new device. The existing open protocols already work for any device.'},
+    {t:'Connect the watch with a direct wire to every device it needs to talk to.', fb:'That couldn\'t scale, and it isn\'t how the Internet works. A device connects to one part of the Internet, and data is routed along paths.'}]},
+  s2q2:{tag:'Scalability', stem:'The number of devices on the Internet has grown from millions to billions. Which statement <b>BEST</b> explains how the Internet has kept working?', opts:[
+    {t:'The Internet was designed to be scalable, so new devices can join using the same open protocols.', ok:true, fb:'Correct. Scalability is the capacity to change size to meet new demands, and the Internet was designed that way (CSN-1.B.6, B.7).'},
+    {t:'The protocols are rewritten every year to handle the new devices.', fb:'The protocols don\'t have to be rewritten each time devices join. They were designed to scale.'},
+    {t:'Old devices are disconnected whenever new ones join.', fb:'The Internet doesn\'t have a fixed size. It grows.'},
+    {t:'With so many devices, protocols are no longer needed.', fb:'It\'s the opposite: the more devices there are, the more shared rules matter.'}]},
+  s2q3:{tag:'IP addresses', stem:'A router receives a packet. Which information in the packet\'s metadata helps the router decide where to send it next?', opts:[
+    {t:'The destination IP address', ok:true, fb:'Correct. The IP address is the unique number that identifies the receiving device, so routers use it to forward the packet toward its destination.'},
+    {t:'The brand of the device that sent it', fb:'Routers don\'t care who made a device. That\'s the whole point of open protocols.'},
+    {t:'The country where the sending device was manufactured', fb:'IP addresses and metadata don\'t show where a device was made.'},
+    {t:'How many times the packet has been viewed', fb:'Packets aren\'t "viewed." Routers forward them based on the destination address.'}]},
+
+  s3q1:{tag:'Fault tolerance', stem:'During a storm, the cell tower carrying Aria\'s phone call loses power. Her call switches to a different nearby tower and continues after a short pause. This <b>BEST</b> demonstrates…', opts:[
+    {t:'fault tolerance', ok:true, fb:'Correct. The system kept working even though one part failed. That\'s fault tolerance, and the extra tower (redundancy) made it possible.'},
+    {t:'scalability', fb:'Scalability is about growing to handle more devices, not surviving a failure.'},
+    {t:'bandwidth', fb:'Bandwidth is how much data can be sent per second.'},
+    {t:'the digital divide', fb:'The digital divide is about unequal access to technology, not equipment failures.'}]},
+  s3q2:{tag:'Redundancy', stem:'A hospital adds a second, separate Internet connection even though the one it has works fine. Which is the <b>BEST</b> reason?', opts:[
+    {t:'It makes the network more reliable: if one connection fails, data can use the other.', ok:true, fb:'Correct. Redundancy costs more, but it gives fault tolerance and reliability (CSN-1.E.6, E.7), which matters a lot for a hospital.'},
+    {t:'Redundant networks cost less to build.', fb:'Redundancy usually costs MORE because of the extra equipment. The payoff is reliability.'},
+    {t:'Internet protocols only work on networks with redundancy.', fb:'The protocols work either way. Redundancy is about surviving failures.'},
+    {t:'Adding connections reduces fault tolerance.', fb:'That\'s backwards. Extra connections INCREASE fault tolerance.'}]},
+  s3q3:{tag:'Dynamic routing', graph:'q5', stem:'In the network below, each line is a direct connection. Device P sends data to Device T. Which statement is true?', opts:[
+    {t:'The data will always take a path with the fewest devices.', fb:'Routing on the Internet is dynamic. It isn\'t planned in advance, and data doesn\'t always take the shortest path.'},
+    {t:'If the data passes through Q, it cannot pass through U.', fb:'It can: P → Q → S → U → T and P → Q → R → U → T are both paths.'},
+    {t:'The data could reach T through S or through U, and different packets may take different paths.', ok:true, fb:'Correct. There are multiple paths (redundancy), and routing is dynamic, so the route can change from packet to packet.'},
+    {t:'The data will pass through V because V is connected to S.', fb:'V is a dead end: its only connection is S. Data sent to V could only come back to S, so V can\'t help the data get to T.'}]},
+
+  s4q1:{tag:'Packet arrival', stem:'Devon downloads a large game update. The server splits it into packets and sends them in order. Which is true about how the packets arrive at Devon\'s computer?', opts:[
+    {t:'They will always arrive in the same order they were sent.', fb:'Each packet can take a different path, and some paths are faster than others, so order isn\'t guaranteed.'},
+    {t:'Either every packet arrives, or none of them do.', fb:'Packets travel independently. Some can arrive while others are lost.'},
+    {t:'They may arrive out of order, and their metadata is used to put them back together.', ok:true, fb:'Correct. Packets may arrive in order, out of order, or not at all (CSN-1.C.3). Metadata such as packet numbers is used to reassemble them.'},
+    {t:'Packets that arrive out of order are sent back to the server.', fb:'Out-of-order packets aren\'t sent back. The receiver puts them in order using their metadata.'}]},
+  s4q2:{tag:'Packet metadata', stem:'Which of the following <b>BEST</b> describes packet metadata?', opts:[
+    {t:'Extra information on every packet, such as the sender\'s and receiver\'s IP addresses and the packet\'s number, used to route and reassemble the data.', ok:true, fb:'Correct. Every packet carries its own metadata so it can be routed and then put back together (CSN-1.C.2).'},
+    {t:'A separate packet, sent at the end, that lists all the other packets.', fb:'Every packet carries its own metadata. There\'s no special "metadata packet."'},
+    {t:'Information added only to important packets so they get faster paths.', fb:'All packets get metadata. Without it, routers wouldn\'t know where to send them.'},
+    {t:'Information added only when a file is too big to send all at once.', fb:'ALL data on the Internet is sent in packets, big or small.'}]},
+  s4q3:{tag:'TCP', stem:'Priya emails a 20-page essay. One packet is lost along the way. Which protocol notices the missing packet and gets it sent again?', opts:[
+    {t:'TCP', ok:true, fb:'Correct. TCP numbers packets, checks that all of them arrived, puts them in order, and requests any that are missing.'},
+    {t:'UDP', fb:'UDP sends packets quickly but does NOT check for or resend missing ones.'},
+    {t:'HTTP', fb:'HTTP requests and sends web pages and files. Checking for missing packets is TCP\'s job.'},
+    {t:'IP', fb:'IP handles addressing and routing. It doesn\'t track or resend lost packets.'}]},
+
+  s5q1:{tag:'HTTP', stem:'Malik clicks a link, and a news article appears in his browser. Which protocol did his browser use to request the article and receive the page?', opts:[
+    {t:'DNS', fb:'DNS translated the website\'s name into an IP address, but it doesn\'t request or send the page.'},
+    {t:'HTTP', ok:true, fb:'Correct. HTTP is the protocol the World Wide Web uses to request and send pages and files.'},
+    {t:'UDP', fb:'UDP sends packets quickly without checking. A web page needs to arrive complete, and HTTP is the protocol that requests it.'},
+    {t:'IP', fb:'IP addresses and routes packets. HTTP is the protocol that asks for the web page.'}]},
+  s5q2:{tag:'Internet vs. Web', stem:'Which of the following <b>BEST</b> describes the relationship between the Internet and the World Wide Web?', opts:[
+    {t:'They are two names for the same thing.', fb:'They\'re different. The Internet is the network; the Web is linked pages and files that travel over it.'},
+    {t:'The World Wide Web is a system of linked pages and files that uses the Internet to share them.', ok:true, fb:'Correct (CSN-1.D.1, D.3). The Web runs on top of the Internet.'},
+    {t:'The Internet runs on top of the World Wide Web.', fb:'That\'s backwards. The Web uses the Internet.'},
+    {t:'The World Wide Web is the cables and routers that connect devices.', fb:'The cables and routers are part of the Internet.'}]},
+
+  s6q1:{tag:'Spotting the digital divide', stem:'Which situation is <b>MOST</b> likely to cause problems related to the digital divide?', opts:[
+    {t:'A town makes its summer-job applications available only through an online portal.', ok:true, fb:'Correct. People without reliable devices or Internet access, often because of income, location, or age, couldn\'t apply. That\'s unequal access.'},
+    {t:'A video call between two countries has a one-second delay.', fb:'That\'s a technical performance issue. It isn\'t about people\'s access.'},
+    {t:'A router sends packets along a longer path because of traffic.', fb:'That\'s routing, a technical detail. It isn\'t the digital divide.'},
+    {t:'A laptop and a tablet from different companies share a file.', fb:'Open protocols let different devices communicate. There\'s no access issue here.'}]},
+  s6q2:{tag:'Effects of the digital divide', stem:'Which of the following is <b>MOST</b> likely an effect of the digital divide?', opts:[
+    {t:'Students in households without reliable Internet have a harder time completing online homework.', ok:true, fb:'Correct. Unequal access to the Internet leads to unequal opportunities, which is the equity issue the digital divide raises (IOC-1.C.4).'},
+    {t:'Everyone gets equal access and influence online.', fb:'That\'s the opposite. The divide creates UNEQUAL access and influence.'},
+    {t:'Some packets arrive out of order.', fb:'Packet order is a network detail, not an effect on society.'},
+    {t:'Different countries use different Internet protocols.', fb:'The Internet uses the same open protocols worldwide.'}]}
+};
+
+/* ---------- Mastery Check: 15 questions across the six topics ---------- */
+const MASTERY = [
+  {tq:1, two:true, stem:'Which of the following are computing devices? <b>Select two answers.</b>', opts:[
+    {t:'A router', ok:true},
+    {t:'An Ethernet cable', fb:'A cable only carries signals. It can\'t run a program.'},
+    {t:'A smart thermostat', ok:true},
+    {t:'A Wi‑Fi signal', fb:'A signal carries data, but it isn\'t a machine that runs programs.'}],
+   explain:'A computing device is a physical machine that can run a program. Routers and smart thermostats (sensors) run programs.'},
+  {tq:2, stem:'Why is it important that the protocols used on the Internet are open?', opts:[
+    {t:'So any company can build devices that connect and communicate with other devices.', ok:true},
+    {t:'So only devices approved by one government can connect.', fb:'Open means anyone can use the protocols. No single government controls who connects.'},
+    {t:'So each manufacturer can keep its own private version.', fb:'Private versions are the opposite of open. Devices would stop understanding each other.'},
+    {t:'So the protocols can be replaced every year.', fb:'Open doesn\'t mean constantly changing. It means shared and published so everyone follows the same rules.'}],
+   explain:'Internet protocols are open (nonproprietary), which lets anyone connect new devices to the Internet (CSN-1.B.4).'},
+  {tq:3, stem:'Two friends in different states play an online game together. Which statement about how their game consoles communicate is <b>TRUE</b>?', opts:[
+    {t:'Their consoles must be connected by one direct cable.', fb:'Devices on the Internet aren\'t wired straight to each other. Each one connects to part of the Internet.'},
+    {t:'Data travels along a path of many directly connected devices between the consoles.', ok:true},
+    {t:'Their consoles must be made by the same company.', fb:'Open protocols let devices from different companies communicate.'},
+    {t:'Once the game starts, the data no longer needs protocols.', fb:'Every piece of data on the Internet follows protocols the whole time.'}],
+   explain:'A path is a sequence of directly connected devices from sender to receiver (CSN-1.A.5).'},
+  {tq:4, graph:'m4', fixed:true, stem:'In the network below, each line is a direct connection. What is the <b>MINIMUM</b> number of connections that must be broken to prevent Device P from communicating with Device V?', opts:[
+    {t:'1', fb:'No single cut disconnects them, because every line has a backup route. Try it: cut any one line and P can still reach V.'},
+    {t:'2', ok:true},
+    {t:'3', fb:'3 is how many connections P has. Cutting all three works, but it isn\'t the minimum: V has only 2 connections.'},
+    {t:'4', fb:'4 cuts would work, but that\'s more than you need. Check the receiver: V has only 2 connections.'}],
+   explain:'Cut T–V and U–V. V has only two connections, so breaking both isolates it. Always check the sender, the receiver, and the middle.'},
+  {tq:5, stem:'A message is split into packets and sent from Device X to Device Y across the Internet. Which of the following is <b>TRUE</b>?', opts:[
+    {t:'All the packets must follow the exact same path.', fb:'Each packet is routed on its own and can take a different path.'},
+    {t:'The path is chosen before the message is sent and cannot change.', fb:'Internet routing is dynamic. It isn\'t specified in advance (CSN-1.B.5).'},
+    {t:'Different packets from the same message may take different paths.', ok:true},
+    {t:'Packets always travel through the fewest possible routers.', fb:'The shortest route isn\'t guaranteed. Traffic and failures change the route.'}],
+   explain:'Routing on the Internet is dynamic, so packets from one message can take different paths (CSN-1.B.5).'},
+  {tq:6, stem:'A city installs 50,000 new smart streetlights that connect to the Internet. Which of the following is <b>TRUE</b>?', opts:[
+    {t:'The Internet\'s protocols will need to be rewritten to handle the new devices.', fb:'The protocols don\'t change when devices are added. They were built to scale.'},
+    {t:'The streetlights can join using the existing protocols because the Internet was designed to be scalable.', ok:true},
+    {t:'Other devices will have to disconnect to make room.', fb:'The Internet doesn\'t have a fixed size. It grows to meet demand.'},
+    {t:'Each streetlight will need a direct connection to every other device.', fb:'Devices connect to one part of the Internet, and data travels along paths.'}],
+   explain:'Scalability is the capacity to change in size to meet new demands. The Internet was designed to be scalable (CSN-1.B.6, B.7).'},
+  {tq:7, stem:'Each packet\'s metadata includes a packet number (for example, "packet 4 of 9"). What is the <b>BEST</b> reason this number is included?', opts:[
+    {t:'So the receiving computer can put the packets in order and notice if any are missing.', ok:true},
+    {t:'So routers know which packets are most important.', fb:'All packets are treated as regular packets. Metadata is on every packet, not just important ones.'},
+    {t:'So the packet can take the shortest path.', fb:'Routers use the destination IP address to route. The packet number is for reassembly.'},
+    {t:'So the sender can see how many people viewed the packet.', fb:'Packets aren\'t "viewed." The number helps rebuild the message.'}],
+   explain:'Metadata is used to route packets and to reassemble the original message (CSN-1.C.2).'},
+  {tq:8, two:true, stem:'A server sends packets 1, 2, 3, 4, 5, in that order, to Lin\'s phone. Which of the following could happen? <b>Select two answers.</b>', opts:[
+    {t:'The packets arrive in the order 1, 2, 3, 4, 5.', ok:true},
+    {t:'The packets arrive in the order 3, 1, 5, 2, 4.', ok:true},
+    {t:'The first router combines all five into one packet.', fb:'Routers forward packets. They don\'t merge them into one.'},
+    {t:'Packet 3 can never arrive before packet 2.', fb:'It can. Packet 3 might take a faster path than packet 2.'}],
+   explain:'Packets may arrive in order, out of order, or not at all (CSN-1.C.3). Arriving in order is possible; it just isn\'t guaranteed.'},
+  {tq:9, stem:'Which of the following is the <b>BEST</b> analogy for an IP address?', opts:[
+    {t:'A home\'s mailing address, which lets mail be delivered to the right house.', ok:true},
+    {t:'A product\'s serial number, which shows where it was built.', fb:'IP addresses don\'t tell you where a device was made.'},
+    {t:'A password, which keeps a device\'s data secret.', fb:'An IP address isn\'t secret, and it doesn\'t protect data. It identifies where data should go.'},
+    {t:'A speed limit, which controls how fast data can travel.', fb:'That sounds more like bandwidth. An IP address identifies a device.'}],
+   explain:'An IP address is a unique number that identifies a device so data can be sent to it.'},
+  {tq:10, two:true, stem:'Which of the following are jobs of TCP (Transmission Control Protocol)? <b>Select two answers.</b>', opts:[
+    {t:'Putting packets back into the correct order', ok:true},
+    {t:'Requesting that missing packets be sent again', ok:true},
+    {t:'Translating domain names like code.org into IP addresses', fb:'That\'s DNS.'},
+    {t:'Sending packets as fast as possible without checking whether they arrived', fb:'That describes UDP.'}],
+   explain:'TCP makes sure all packets arrive and are in order. It\'s used when accuracy matters more than speed.'},
+  {tq:11, stem:'A web browser sends a GET request asking a server for a web page, and the server sends the page back. Which protocol defines how this request and response work?', opts:[
+    {t:'TCP', fb:'TCP makes sure the packets arrive complete, but the request for the page itself is HTTP.'},
+    {t:'DNS', fb:'DNS finds the server\'s IP address. It doesn\'t request the page.'},
+    {t:'HTTP', ok:true},
+    {t:'IP', fb:'IP addresses and routes packets. The page request is HTTP.'}],
+   explain:'HTTP is the protocol the World Wide Web uses to request and send pages and files (CSN-1.D.2).'},
+  {tq:12, stem:'An undersea Internet cable between two continents is damaged. Data is automatically sent through other cables, and users notice only a small slowdown. This <b>BEST</b> shows that the Internet is…', opts:[
+    {t:'fault tolerant', ok:true},
+    {t:'scalable', fb:'Scalable means able to grow. This situation is about surviving a failure.'},
+    {t:'a protocol', fb:'The Internet uses protocols, but that isn\'t what this situation shows.'},
+    {t:'affected by the digital divide', fb:'The digital divide is about people\'s unequal access, not damaged cables.'}],
+   explain:'A fault-tolerant system keeps working when parts fail. If a connection fails, data is sent along a different route (CSN-1.E.4, E.5).'},
+  {tq:13, stem:'An Internet Service Provider is deciding whether to add extra, redundant connections to its network. Which of the following is a <b>DRAWBACK</b> of adding them?', opts:[
+    {t:'It requires more equipment and money.', ok:true},
+    {t:'It makes the network less fault tolerant.', fb:'Redundancy makes a network MORE fault tolerant.'},
+    {t:'The network\'s protocols will stop working.', fb:'Protocols work on networks with or without redundancy.'},
+    {t:'Data will only be able to take one path.', fb:'That\'s backwards. Redundancy creates MORE paths.'}],
+   explain:'Redundancy often requires additional resources but provides fault tolerance and reliability (CSN-1.E.6). Remember "strings cost money" from Lesson 2.'},
+  {tq:14, stem:'Which situation is <b>MOST</b> likely to raise concerns about the digital divide?', opts:[
+    {t:'A school district moves all parent-teacher conference sign-ups to an online-only form.', ok:true},
+    {t:'A video streams at lower quality during busy evening hours.', fb:'That\'s about network traffic, not about who has access.'},
+    {t:'A message travels between two devices on different continents.', fb:'Distance between devices isn\'t the digital divide.'},
+    {t:'Two routers use the same open protocol.', fb:'That\'s just how the Internet works. It doesn\'t affect people\'s access.'}],
+   explain:'Families without devices or Internet access would be shut out. "Online only" is a digital divide red flag (IOC-1.C.1, C.2).'},
+  {tq:15, stem:'Which of the following <b>BEST</b> describes the digital divide?', opts:[
+    {t:'Differing access to computing devices and the Internet, based on socioeconomic, geographic, or demographic characteristics', ok:true},
+    {t:'The gap between fast routers and slow routers on the Internet', fb:'The digital divide is about people, not router speed.'},
+    {t:'The difference between the Internet and the World Wide Web', fb:'That\'s a real difference, but it isn\'t the digital divide.'},
+    {t:'The splitting of a message into separate packets', fb:'That\'s packet switching, not the digital divide.'}],
+   explain:'This is the CED definition (IOC-1.C.2). It affects individuals and groups and raises issues of equity, access, and influence.'}
+];
+
+
+/* ---------- Quick review (required after 3 Mastery Check tries without passing) ---------- */
+const REVIEW = {
+  s1:{key:'A <b>computing device</b> is a machine that can run a program (routers and smart sensors count; cables don\'t). On the Internet, devices are not wired straight to each other: data travels along a <b>path</b> of directly connected devices.',
+      q:{stem:'Your phone sends a message to a friend in another state. How does the data get there?', opts:[
+        {t:'Through one wire that connects the two phones directly.', fb:'Phones are never wired straight to each other. Each one connects to one part of the Internet.'},
+        {t:'Hop by hop, along a path of directly connected devices.', ok:true, fb:'Correct. Each hop is a direct connection, and the whole chain is the path.'},
+        {t:'Only if both phones are made by the same company.', fb:'Open protocols let devices from any company talk to each other.'},
+        {t:'Straight to the friend\'s phone, without any other devices.', fb:'The data passes through routers and other devices along the way.'}]}},
+  s2:{key:'A <b>protocol</b> is an agreed-upon set of rules. Internet protocols are <b>open</b>, so any company\'s device can follow them, and the Internet was designed to <b>scale</b>. An <b>IP address</b> is the unique number that identifies a device.',
+      q:{stem:'Why can a brand-new tablet from any company join the Internet right away?', opts:[
+        {t:'Internet protocols are open, so every device follows the same shared rules.', ok:true, fb:'Correct. Open, shared protocols are why new devices can join and the Internet can grow.'},
+        {t:'Each company uses its own secret protocol.', fb:'Secret, company-only rules would stop devices from understanding each other.'},
+        {t:'The government approves each new tablet first.', fb:'No approval step is needed. The tablet just follows the open protocols.'},
+        {t:'The Internet rewrites its protocols for every new device.', fb:'The protocols stay the same. They were designed to scale.'}]}},
+  s3:{key:'Internet routing is <b>dynamic</b>: data can take any available path. <b>Redundancy</b> (extra paths) makes the network <b>fault tolerant</b>, so it keeps working when a part fails. To find the fewest cuts that disconnect two devices, check the sender, the receiver, and any bridge in the middle.',
+      q:{stem:'A school has two separate paths to a data center. A construction crew cuts the cable on one path. What happens?', opts:[
+        {t:'Data is sent along the other path, so the connection keeps working.', ok:true, fb:'Correct. Redundancy gives the network a backup route. That\'s fault tolerance.'},
+        {t:'All communication stops until the cable is fixed.', fb:'That would happen with only one path. The second path is the backup.'},
+        {t:'The school has to get a new IP address.', fb:'A cut cable doesn\'t change anyone\'s address. Routers just pick a different path.'},
+        {t:'Packets keep trying the cut path forever.', fb:'Routing is dynamic, so routers send data along paths that still work.'}]}},
+  s4:{key:'Every packet has <b>metadata</b> (like IP addresses and a packet number) used to route it and put the message back together. Packets can arrive <b>in order, out of order, or not at all</b>. <b>TCP</b> checks and resends missing packets; <b>UDP</b> is faster but doesn\'t.',
+      q:{stem:'A photo is split into 10 packets and sent with TCP. Packets 1 through 9 arrive, but packet 10 doesn\'t. What happens?', opts:[
+        {t:'The receiver notices packet 10 is missing and asks for it again.', ok:true, fb:'Correct. TCP uses the packet numbers to find missing packets and get them resent.'},
+        {t:'The photo appears with a piece missing, and nothing is resent.', fb:'That\'s what could happen with UDP, not TCP.'},
+        {t:'All 9 packets are thrown away.', fb:'TCP keeps the packets that arrived and only asks for the missing one.'},
+        {t:'Packet 10 is rebuilt from the other packets\' metadata.', fb:'Metadata can\'t rebuild missing data. The packet has to be sent again.'}]}},
+  s5:{key:'The <b>Internet</b> is the network. The <b>World Wide Web</b> is linked pages and files that <b>use</b> the Internet. <b>HTTP</b> is the protocol the Web uses to request and send pages. <b>DNS</b> turns names like code.org into IP addresses.',
+      q:{stem:'You type a website address and the page loads. Which protocol requested the page from the server?', opts:[
+        {t:'DNS', fb:'DNS found the server\'s IP address, but it didn\'t request the page.'},
+        {t:'HTTP', ok:true, fb:'Correct. HTTP is how browsers request and receive web pages.'},
+        {t:'UDP', fb:'UDP is a fast way to send packets. It isn\'t what asks for web pages.'},
+        {t:'IP', fb:'IP addresses and routes packets. HTTP makes the page request.'}]}},
+  s6:{key:'The <b>digital divide</b> is differing access to computing devices and the Internet based on <b>socioeconomic, geographic, or demographic</b> characteristics. It\'s about <b>people and access</b>, not about packets, distance, or device brands.',
+      q:{stem:'Which of these is an example of the digital divide?', opts:[
+        {t:'Some rural families can\'t get high-speed Internet at home.', ok:true, fb:'Correct. Location (geography) is causing unequal access.'},
+        {t:'Packets sometimes take a longer path through the network.', fb:'That\'s routing, a technical detail.'},
+        {t:'A laptop and a phone use the same protocol.', fb:'That\'s how the Internet works. It isn\'t an access issue.'},
+        {t:'A web page loads slowly during busy hours.', fb:'That\'s network traffic, not unequal access for people.'}]}}
+};
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const LET = 'ABCDEFG';
+const NAVNAME = {s1:'Networks', s2:'Protocols', s3:'Routing', s4:'Packets', s5:'Web & HTTP', s6:'Digital Divide'};
+const VIEWS = ['home','s1','s2','s3','s4','s5','s6','mastery','certificate','verify'];
+const MASTERY_BAR = 12;          // 12/15 = 80% to pass
+const REVIEW_AFTER = 3;          // tries in a row without passing before a quick review is required
+const STORE_KEY = 'apcsp-u2-internet-review-v2';
+const TEACHER_HASH = 0x9486f364; // hash of the teacher code (the code itself is not stored in the page)
+const STANDALONE = typeof window.claude === 'undefined';
+const LOCK_SVG = '<svg class="lock" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="3.5" y="7" width="9" height="7" rx="1.5" fill="currentColor"/></svg>';
+
+const state = {
+  name: '', period: '', started: false, teacher: false, tasks: {}, first: {},
+  mq: {n: 0, first: null, best: -1, bestRes: null, lastRes: null, lastAt: null, fails: 0},
+  cur: null
+};
+let view = 'home', lockedTarget = null, dlNS = null;
+
+/* ---------- codes (shared helpers) ---------- */
+const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+const SALT = 'apcsp-u2-internet-2026';
+const EPOCH = Date.UTC(2026, 0, 1);
+const normName = n => String(n || '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]/g, '');
+function fnv(str){ let h = 0x811c9dc5; const b = new TextEncoder().encode(str); for (let i = 0; i < b.length; i++){ h ^= b[i]; h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; }
+function b32enc(n, len){ let s = ''; for (let i = 0; i < len; i++){ s = B32[Number(n & 31n)] + s; n >>= 5n; } return s; }
+function b32dec(s){ let n = 0n; for (const ch of s){ const v = B32.indexOf(ch); if (v < 0) return null; n = (n << 5n) | BigInt(v); } return n; }
+const fixB32 = s => s.replace(/O/g, '0').replace(/[IL]/g, '1');
+/* Station checkpoint: P<station>-XXXX, tied to the name */
+function cpCode(name, n){ return `P${n}-${b32enc(BigInt(fnv(SALT + '|cp|' + normName(name) + '|' + n) & 0xFFFFF), 4)}`; }
+function readCp(name, code){
+  const s = String(code || '').toUpperCase().replace(/[^0-9A-Z]/g, '');
+  const m = s.match(/^P([1-6])([0-9A-Z]{4})$/); if (!m) return null;
+  return cpCode(name, +m[1]) === `P${m[1]}-${fixB32(m[2])}` ? +m[1] : 0;
+}
+/* Mastery checkpoint / certificate verification code: U2-XXXX-XXXX-XXXX-XXXX */
+function makeCode(name, d){
+  const mins = Math.max(0, Math.floor((d.at - EPOCH) / 60000)) & 0xFFFFFF;
+  let res = 0; (d.res || []).forEach((ok, i) => { if (ok) res |= (1 << i); });
+  let p = 2n;
+  p = (p << 3n) | BigInt(Math.min(6, d.stations));
+  p = (p << 4n) | BigInt(Math.max(0, d.first));
+  p = (p << 4n) | BigInt(Math.max(0, d.best));
+  p = (p << 5n) | BigInt(Math.min(31, d.attempts));
+  p = (p << 3n) | BigInt(Math.min(7, d.fails || 0));
+  p = (p << 15n) | BigInt(res);
+  p = (p << 24n) | BigInt(mins);
+  const ps = b32enc(p, 12);
+  const cs = b32enc(BigInt(fnv(SALT + '|' + normName(name) + '|' + ps) & 0xFFFFF), 4);
+  return `U2-${ps.slice(0, 4)}-${ps.slice(4, 8)}-${ps.slice(8, 12)}-${cs}`;
+}
+function readCode(name, code){
+  if (!normName(name)) return {ok:false, why:'noname'};
+  let s = String(code || '').toUpperCase().replace(/[^0-9A-Z]/g, '');
+  if (s.startsWith('U2')) s = s.slice(2);
+  s = fixB32(s);
+  if (s.length !== 16) return {ok:false, why:'format'};
+  const ps = s.slice(0, 12), p = b32dec(ps), c = b32dec(s.slice(12));
+  if (p === null || c === null) return {ok:false, why:'format'};
+  if (Number(c) !== (fnv(SALT + '|' + normName(name) + '|' + ps) & 0xFFFFF)) return {ok:false, why:'mismatch'};
+  let n = p;
+  const mins = Number(n & 0xFFFFFFn); n >>= 24n;
+  const res = Number(n & 0x7FFFn); n >>= 15n;
+  const fails = Number(n & 7n); n >>= 3n;
+  const attempts = Number(n & 31n); n >>= 5n;
+  const best = Number(n & 15n); n >>= 4n;
+  const first = Number(n & 15n); n >>= 4n;
+  const stations = Number(n & 7n); n >>= 3n;
+  if (n !== 2n) return {ok:false, why:'format'};
+  return {ok:true, stations, first, best, attempts, fails, res: MASTERY.map((_, i) => !!(res & (1 << i))), at: new Date(EPOCH + mins * 60000)};
+}
+function masteryCode(){
+  const M = state.mq; if (!M.n || !state.name.trim()) return '';
+  return makeCode(state.name.trim(), {stations: stationsDone(), first: M.first, best: M.best, attempts: M.n, fails: M.fails, res: M.bestRes, at: M.lastAt || Date.now()});
+}
+
+/* ---------- saving progress in this browser (a convenience; checkpoint codes are the backup) ---------- */
+let saved = null, saveTimer = null;
+function loadSaved(){ try { const raw = localStorage.getItem(STORE_KEY); saved = raw ? JSON.parse(raw) : null; } catch (e) { saved = null; } }
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        v: 2, name: state.name, period: state.period, started: state.started,
+        done: Object.keys(state.tasks).filter(k => state.tasks[k].done),
+        first: state.first, mq: state.mq, cur: state.cur
+      }));
+    } catch (e) { /* storage unavailable: checkpoint codes still work */ }
+  }, 250);
+}
+function applySaved(){
+  if (!saved || saved.v !== 2) return false;
+  state.name = saved.name || ''; state.period = saved.period || ''; state.started = !!saved.started;
+  (saved.done || []).forEach(id => { if (state.tasks[id]) state.tasks[id].done = true; });
+  syncWidgetBadges();
+  state.first = saved.first || {};
+  if (saved.mq && typeof saved.mq.n === 'number') state.mq = Object.assign(state.mq, saved.mq);
+  state.cur = saved.cur && Array.isArray(saved.cur.order) ? saved.cur : null;
+  return state.started;
+}
+
+/* ---------- task tracking ---------- */
+function stationOf(el){ const s = el.closest('[data-station]'); return s ? s.dataset.station : null; }
+function reg(st, id){ if (!state.tasks[id]) state.tasks[id] = {st, done:false}; }
+function markWidgetDone(id){
+  const el = document.querySelector(`[data-widget][data-id="${id}"]`);
+  if (!el || el.querySelector(':scope > .wdone')) return;
+  const b = document.createElement('div'); b.className = 'wdone'; b.textContent = '✓ Completed';
+  el.prepend(b);
+}
+function syncWidgetBadges(){
+  Object.keys(state.tasks).forEach(id => { if (state.tasks[id].done) markWidgetDone(id); });
+  if (PUZZLES.every((p, i) => state.tasks['s3-lab-' + i] && state.tasks['s3-lab-' + i].done)) markWidgetDone('s3-lab');
+}
+function done(id){
+  const t = state.tasks[id]; if (!t || t.done) return;
+  t.done = true; markWidgetDone(id);
+  if (id.startsWith('s3-lab-') && PUZZLES.every((p, i) => state.tasks['s3-lab-' + i].done)) markWidgetDone('s3-lab');
+  save(); refresh();
+}
+function completeStation(st){ Object.values(state.tasks).forEach(t => { if (t.st === st) t.done = true; }); }
+function stStats(st){
+  const ts = Object.values(state.tasks).filter(t => t.st === st);
+  const d = ts.filter(t => t.done).length;
+  return {d, n: ts.length, complete: ts.length > 0 && d === ts.length};
+}
+const stationsDone = () => { let k = 0; for (const s of STATIONS){ if (stStats(s.id).complete) k++; else break; } return k; };
+const allStationsDone = () => stationsDone() === STATIONS.length;
+const passed = () => state.mq.best >= MASTERY_BAR;
+const needReview = () => !passed() && state.mq.fails >= REVIEW_AFTER;
+function stationById(id){ return STATIONS.find(s => s.id === id); }
+
+/* ---------- locks ---------- */
+function canOpen(v){
+  if (v === 'home') return true;
+  if (state.teacher) return true;
+  if (v === 'verify') return false;
+  if (!state.started) return false;
+  const i = STATIONS.findIndex(s => s.id === v);
+  if (i >= 0) return i <= stationsDone();
+  if (v === 'mastery') return allStationsDone();
+  if (v === 'certificate') return allStationsDone();
+  return false;
+}
+function nextStop(){
+  const k = stationsDone();
+  if (k < STATIONS.length) return STATIONS[k].id;
+  return passed() ? 'certificate' : 'mastery';
+}
+
+function refresh(){
+  STATIONS.forEach(s => {
+    const {d, n, complete} = stStats(s.id);
+    $$(`[data-spbar="${s.id}"]`).forEach(b => b.style.width = (n ? d / n * 100 : 0) + '%');
+    $$(`[data-sptxt="${s.id}"]`).forEach(b => b.textContent = complete ? 'Station complete ✓' : `${d} of ${n} activities done`);
+    renderFoot(s.id);
+  });
+  const all = Object.values(state.tasks), d = all.filter(t => t.done).length;
+  const pct = Math.round((d + (passed() ? 6 : 0)) / (all.length + 6) * 100);
+  $('#overallBar').style.width = pct + '%';
+  $('#overallTxt').textContent = pct + '% complete';
+  $('#teacherBar').hidden = !state.teacher;
+  $('#teacherNotes').hidden = !state.teacher;
+  renderNav(); renderStationCards(); renderHomeMastery(); renderCpCard();
+}
+
+/* ---------- navigation ---------- */
+function go(v, push = true){
+  if (!VIEWS.includes(v)) v = 'home';
+  view = v;
+  if (push){ try { if (location.hash.slice(1) !== v) history.pushState(null, '', '#' + v); } catch (e) {} }
+  route();
+}
+function route(){
+  const open = canOpen(view);
+  $$('.view').forEach(x => x.classList.toggle('on', open ? x.id === 'view-' + view : x.id === 'view-locked'));
+  if (!open) renderLocked(view);
+  else if (view === 'mastery') renderMastery();
+  else if (view === 'certificate') renderCert();
+  renderNav();
+  window.scrollTo(0, 0);
+  const nav = $('#nav'), act = $('#nav a.active');
+  if (act) nav.scrollLeft = Math.max(0, act.offsetLeft - nav.clientWidth / 2 + act.clientWidth / 2);
+}
+function renderLocked(v){
+  const box = $('#lockedBox');
+  const i = STATIONS.findIndex(s => s.id === v);
+  let title, msg;
+  if (v === 'verify'){ title = 'Teachers only'; msg = 'The certificate checker opens with the teacher code on the Start page.'; }
+  else if (!state.started){ title = 'Start on the Home page'; msg = 'Type your full name and press <b>Start Station 1</b>. Coming back? Enter your name and checkpoint code there.'; }
+  else if (i >= 0){ title = `Station ${i + 1} is locked`; msg = `Finish Station ${i} to unlock it.`; }
+  else { title = `The ${v === 'mastery' ? 'Mastery Check' : 'certificate'} is locked`; msg = `Finish all six stations to unlock it. You've finished ${stationsDone()} of 6.`; }
+  const next = state.started ? nextStop() : 'home';
+  box.innerHTML = `<div class="card"><div class="lockcard">${LOCK_SVG.replace('class="lock"', '')}<div><h3 style="margin-bottom:4px">${title}</h3><p class="muted" style="margin:0">${msg}</p></div></div>
+    <div class="btn-row"><a class="btn btn-primary" href="#${next}">${next === 'home' ? 'Go to the Start page' : 'Go to ' + viewName(next)}</a></div></div>`;
+}
+function viewName(v){ const s = stationById(v); return s ? `Station ${s.n}: ${s.title}` : v === 'mastery' ? 'the Mastery Check' : v === 'certificate' ? 'your certificate' : 'Home'; }
+function renderNav(){
+  const items = [['home','Start']].concat(STATIONS.map(s => [s.id, `${s.n}. ${NAVNAME[s.id]}`]), [['mastery','Mastery Check'], ['certificate','Certificate']]);
+  $('#nav').innerHTML = items.map(([id, label]) => {
+    let ck = '', cls = view === id ? 'active' : '';
+    if (/^s\d$/.test(id) && stStats(id).complete) ck = '<span class="ck" aria-label="complete">✓</span>';
+    if (id === 'mastery' && passed()) ck = '<span class="ck" aria-label="passed">✓</span>';
+    if (id === 'certificate' && passed()) ck = '<span class="ck" aria-label="earned">✓</span>';
+    if (!canOpen(id)){ ck = LOCK_SVG; cls += ' locked'; }
+    return `<a href="#${id}" class="${cls.trim()}"${view === id ? ' aria-current="page"' : ''}>${esc(label)}${ck}</a>`;
+  }).join('');
+}
+
+/* ---------- start page ---------- */
+function renderStationCards(){
+  $('#stationCards').innerHTML = STATIONS.map(s => {
+    const {d, n, complete} = stStats(s.id), open = canOpen(s.id);
+    const badge = complete ? '<span class="badge done">Complete</span>' : open ? '' : '<span class="badge lock">Locked</span>';
+    return `<a class="scard${open ? '' : ' locked'}" href="#${s.id}" style="--sc:${s.color}">${badge}
+      <div class="eyebrow">Station ${s.n}</div><h3>${esc(s.title)}</h3>
+      <div class="muted" style="font-size:.92rem">${esc(s.blurb)}</div>
+      <div class="status"><div class="bar"><span style="width:${n ? d / n * 100 : 0}%"></span></div>${complete ? 'Done' : d ? `${d} of ${n} done` : open ? 'Ready' : 'Locked'}</div></a>`;
+  }).join('');
+}
+function renderCpCard(){
+  const box = $('#cpCard'), k = stationsDone();
+  if (!state.started){ box.innerHTML = '<p class="muted" style="margin:0">Type your name above and press <b>Start Station 1</b>. Your checkpoint codes will show up here too.</p>'; return; }
+  const code = state.mq.n ? masteryCode() : k ? cpCode(state.name, k) : '';
+  const where = state.mq.n ? 'after your latest Mastery Check try' : k ? `after Station ${k}` : '';
+  box.innerHTML = `<div class="cp-box"><div><b>${k} of 6 stations complete.</b> ${code ? `Latest checkpoint code (${where}):` : 'Finish Station 1 to get your first checkpoint code.'}</div>${code ? `<span class="cp-code">${code}</span>` : ''}</div>
+    <div class="btn-row"><a class="btn btn-primary" href="#${nextStop()}">Continue: ${esc(viewName(nextStop()))} →</a></div>`;
+}
+function renderHomeMastery(){
+  const box = $('#homeMastery'); if (!box) return;
+  const n = stationsDone(), M = state.mq;
+  if (n < STATIONS.length){
+    box.innerHTML = `<div class="lockcard">${LOCK_SVG.replace('class="lock"', '')}<div><b>Locked: ${n} of ${STATIONS.length} stations complete.</b><p class="muted" style="margin:4px 0 0">Finish every station to unlock the Mastery Check. Pass it (12 out of 15) to earn your certificate.</p></div></div>`;
+  } else if (!M.n){
+    box.innerHTML = `<p><b>All six stations complete.</b> The Mastery Check is unlocked: 15 questions, and you need 12 to pass.</p><a class="btn btn-primary" href="#mastery">Start the Mastery Check</a>`;
+  } else if (passed()){
+    box.innerHTML = `<p><b>Passed.</b> First try: ${M.first}/15 · Best: ${M.best}/15 · Tries: ${M.n}</p><div class="btn-row"><a class="btn btn-primary" href="#certificate">View my certificate</a><a class="btn" href="#mastery">Retake for practice</a></div>`;
+  } else {
+    box.innerHTML = `<p><b>Not passed yet.</b> Best so far: ${M.best}/15. You need 12.</p><a class="btn btn-primary" href="#mastery">${needReview() ? 'Do the quick review' : 'Try the Mastery Check again'}</a>`;
+  }
+}
+function renderWelcome(restored){
+  const box = $('#welcome');
+  if (!restored){ box.innerHTML = ''; return; }
+  let armed = false;
+  box.innerHTML = `<div class="welcome"><span>Welcome back${state.name ? ', <b></b>' : ''}. Your progress on this device was restored.</span><button type="button" class="btn btn-sm" data-reset>Not you? Start fresh</button></div>`;
+  if (state.name) $('.welcome b', box).textContent = state.name;
+  const b = $('[data-reset]', box);
+  b.onclick = () => {
+    if (!armed){ armed = true; b.textContent = 'Tap again to erase all progress on this device'; b.classList.add('btn-primary'); return; }
+    try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+    location.reload();
+  };
+}
+function initStart(){
+  const ni = $('#nameInput'), pi = $('#periodInput'), sb = $('#startBtn'), sm = $('#startMsg');
+  ni.value = state.name; pi.value = state.period;
+  const label = () => { sb.textContent = state.started ? 'Continue' : 'Start Station 1'; };
+  label();
+  ni.oninput = () => { state.name = ni.value; save(); if (state.started) refresh(); };
+  pi.oninput = () => { state.period = pi.value; save(); };
+  sb.onclick = () => {
+    if (normName(ni.value).length < 2){ sm.innerHTML = '<div class="fb bad">Type your full name first.</div>'; ni.focus(); return; }
+    state.name = ni.value.trim(); ni.value = state.name; state.started = true; sm.innerHTML = ''; save(); refresh(); label();
+    go(nextStop());
+  };
+  const rn = $('#resName'), rc = $('#resCode'), rm = $('#resMsg');
+  $('#resBtn').onclick = () => {
+    const name = rn.value.trim(), code = rc.value.trim();
+    if (normName(name).length < 2){ rm.innerHTML = '<div class="fb bad">Type your full name, spelled the same way as before.</div>'; return; }
+    if (!code){ rm.innerHTML = '<div class="fb bad">Enter your latest checkpoint code.</div>'; return; }
+    const cp = readCp(name, code);
+    let target = null;
+    if (cp){
+      for (let i = 0; i < cp; i++) completeStation(STATIONS[i].id);
+      target = cp < STATIONS.length ? STATIONS[cp].id : 'mastery';
+    } else if (cp === null){
+      const r = readCode(name, code);
+      if (r.ok){
+        STATIONS.forEach(s => completeStation(s.id));
+        const M = state.mq;
+        if (r.attempts >= M.n){ Object.assign(M, {n: r.attempts, first: r.first, best: r.best, bestRes: r.res, lastRes: r.res, lastAt: r.at.getTime(), fails: r.fails}); }
+        state.cur = null;
+        target = r.best >= MASTERY_BAR ? 'certificate' : 'mastery';
+      }
+    }
+    if (!target){ rm.innerHTML = '<div class="fb bad"><b class="lead">That code doesn\'t match that name.</b>Check that your name is spelled exactly as before and that you typed the code correctly. Station codes look like <b>P3-7KQ2</b>; Mastery Check codes look like <b>U2-XXXX-XXXX-XXXX-XXXX</b>.</div>'; return; }
+    state.name = name; state.started = true; ni.value = name; label();
+    syncWidgetBadges(); save(); refresh();
+    rm.innerHTML = `<div class="fb good">Welcome back! Taking you to ${esc(viewName(target))}.</div>`;
+    setTimeout(() => go(target), 600);
+  };
+  const tc = $('#tCode'), tm = $('#tMsg');
+  $('#tBtn').onclick = () => {
+    const v = tc.value.toUpperCase().replace(/[^0-9A-Z]/g, '');
+    if (fnv(SALT + '|teacher|' + v) === TEACHER_HASH){ state.teacher = true; tc.value = ''; tm.innerHTML = '<div class="fb good">Teacher mode is on. Every section is unlocked. Your notes are below.</div>'; refresh(); }
+    else tm.innerHTML = '<div class="fb bad">That code isn\'t right.</div>';
+  };
+  const lu = $('#luName'), lo = $('#luOut');
+  lu.oninput = () => {
+    const name = lu.value.trim();
+    if (normName(name).length < 2){ lo.innerHTML = ''; return; }
+    lo.innerHTML = `<div class="lu-grid">${STATIONS.map((s, i) => `<div><span class="k">After Station ${s.n}</span><span class="c">${cpCode(name, s.n)}</span><span class="n">Resumes at ${i + 1 < STATIONS.length ? 'Station ' + (s.n + 1) : 'the Mastery Check'}</span></div>`).join('')}</div>
+      <p class="muted" style="margin:10px 0 0">The Station 6 code opens the Mastery Check but doesn't bring back earlier tries. If the student already passed, check their certificate code in the certificate checker instead.</p>`;
+  };
+  $('#tExit').onclick = () => { state.teacher = false; $('#tMsg').innerHTML = ''; refresh(); go('home'); };
+}
+const ALIGN = {
+  s1:['Computing devices, systems &amp; networks; paths; bandwidth', '4.1', 'CSN-1.A, CSN-1.B', 'CSN-1.A.1–A.8, CSN-1.B.2'],
+  s2:['Protocols; open standards; IP addresses; scalability', '4.1', 'CSN-1.B, CSN-1.C', 'CSN-1.B.1, B.3, B.4, B.6, B.7; CSN-1.C.2, C.4'],
+  s3:['Routing; redundancy; fault tolerance', '4.1, 4.2', 'CSN-1.A, CSN-1.B, CSN-1.E', 'CSN-1.A.6; CSN-1.B.5; CSN-1.E.1–E.7'],
+  s4:['Packets; metadata; TCP and UDP', '4.1', 'CSN-1.C', 'CSN-1.C.1–C.4'],
+  s5:['Internet vs. World Wide Web; HTTP; DNS', '4.1', 'CSN-1.D', 'CSN-1.D.1–D.3'],
+  s6:['The digital divide', '5.2', 'IOC-1.C', 'IOC-1.C.1–C.5']
+};
+function renderAlignTable(){
+  $('#alignTable tbody').innerHTML = STATIONS.map(s => { const [t, topic, lo, ek] = ALIGN[s.id];
+    return `<tr><td>${s.n}. ${esc(NAVNAME[s.id])}</td><td>${t}</td><td>${topic}</td><td style="font-family:var(--mono);font-weight:600">${lo}</td><td style="font-family:var(--mono)">${ek}</td></tr>`;
+  }).join('');
+}
+function topicScores(res){
+  return STATIONS.map(s => { const idx = MASTERY.map((m, i) => TESTQ[m.tq].st === s.id ? i : -1).filter(i => i >= 0);
+    return {id: s.id, name: NAVNAME[s.id], got: idx.filter(i => res && res[i]).length, of: idx.length}; });
+}
+function renderFoot(st){
+  const i = STATIONS.findIndex(s => s.id === st), next = STATIONS[i + 1], prev = STATIONS[i - 1];
+  const {complete} = stStats(st), foot = $(`[data-foot="${st}"]`);
+  const nextId = next ? next.id : 'mastery', nextLabel = next ? `Next: Station ${next.n}` : 'Go to the Mastery Check';
+  const code = complete && state.name.trim() ? cpCode(state.name, i + 1) : '';
+  foot.innerHTML = (complete
+    ? `<div class="done-banner on" role="status"><b>Checkpoint reached ✓</b> Station ${i + 1} is complete.${code ? `<div class="cp-box"><span>Your checkpoint code:</span><span class="cp-code">${code}</span></div><p style="margin:8px 0 0">Write it down. If the page reloads, go to <b>Start</b>, enter your name and this code, and you'll jump back here.</p>` : ''}</div>`
+    : `<div class="foot-lock">Finish every activity and check question above to reach the checkpoint${next ? ` and unlock Station ${next.n}` : ' and unlock the Mastery Check'}.</div>`)
+    + `<div class="foot-nav"><a class="btn" href="#${prev ? prev.id : 'home'}">← ${prev ? 'Station ' + prev.n : 'Start'}</a>
+       <a class="btn btn-primary${complete || state.teacher ? '' : ' is-locked'}" href="#${nextId}"${complete || state.teacher ? '' : ' aria-disabled="true" tabindex="-1"'}>${nextLabel} →</a></div>`;
+}
+
+/* ---------- graph helpers ---------- */
+function adjOf(G, cuts){
+  const a = {}; Object.keys(G.nodes).forEach(n => a[n] = []);
+  G.edges.forEach(([x, y], i) => { if (cuts && cuts.has(i)) return; a[x].push(y); a[y].push(x); });
+  return a;
+}
+function edgeIndex(G, a, b){ return G.edges.findIndex(([x, y]) => (x === a && y === b) || (x === b && y === a)); }
+function bfsPath(G, cuts, s = G.s, t = G.t){
+  const a = adjOf(G, cuts), prev = {[s]: null}, q = [s];
+  while (q.length){ const u = q.shift(); if (u === t) break; for (const v of a[u]) if (!(v in prev)){ prev[v] = u; q.push(v); } }
+  if (!(t in prev)) return null;
+  const p = []; for (let v = t; v !== null; v = prev[v]) p.unshift(v); return p;
+}
+function allPaths(G, cuts, cap = 600){
+  const a = adjOf(G, cuts), out = [], path = [G.s], seen = new Set([G.s]);
+  (function dfs(u){
+    if (out.length >= cap) return;
+    if (u === G.t){ out.push(path.slice()); return; }
+    for (const v of a[u]) if (!seen.has(v)){ seen.add(v); path.push(v); dfs(v); path.pop(); seen.delete(v); }
+  })(G.s);
+  return out;
+}
+/* Max flow (unit capacities, undirected) = minimum number of cuts; also returns edge-disjoint paths */
+function maxFlow(G){
+  const a = adjOf(G), key = (u, v) => u + '>' + v, f = {};
+  const res = (u, v) => 1 - (f[key(u, v)] || 0);
+  let total = 0;
+  for (;;){
+    const prev = {[G.s]: null}, q = [G.s];
+    while (q.length && !(G.t in prev)){ const u = q.shift(); for (const v of a[u]) if (!(v in prev) && res(u, v) > 0){ prev[v] = u; q.push(v); } }
+    if (!(G.t in prev)) break;
+    for (let v = G.t; prev[v] !== null; v = prev[v]){ const u = prev[v]; f[key(u, v)] = (f[key(u, v)] || 0) + 1; f[key(v, u)] = (f[key(v, u)] || 0) - 1; }
+    total++;
+  }
+  const paths = [];
+  for (let k = 0; k < total; k++){
+    const prev = {[G.s]: null}, q = [G.s];
+    while (q.length && !(G.t in prev)){ const u = q.shift(); for (const v of a[u]) if (!(v in prev) && (f[key(u, v)] || 0) > 0){ prev[v] = u; q.push(v); } }
+    if (!(G.t in prev)) break;
+    const p = []; for (let v = G.t; v !== null; v = prev[v]) p.unshift(v);
+    for (let i = 0; i < p.length - 1; i++){ f[key(p[i], p[i + 1])]--; f[key(p[i + 1], p[i])]++; }
+    paths.push(p);
+  }
+  return {total, paths};
+}
+function graphSVG(G, o = {}){
+  const r = G.r || 21, cuts = o.cuts || new Set(), pn = o.path || [];
+  const onE = new Set(); for (let i = 0; i < pn.length - 1; i++){ const k = edgeIndex(G, pn[i], pn[i + 1]); if (k >= 0) onE.add(k); }
+  const lab = k => (G.labels && G.labels[k]) || k;
+  let s = `<svg class="net" viewBox="0 0 ${G.w} ${G.h}"${G.roleRight ? ' style="max-height:640px"' : ''} role="img" aria-label="${esc(o.label || 'Network diagram. Circles are devices and lines are direct connections.')}"><g class="dps"></g>`;
+  G.edges.forEach(([a, b], i) => { const [x1, y1] = G.nodes[a], [x2, y2] = G.nodes[b];
+    s += `<line class="edge${cuts.has(i) ? ' cut' : ''}${onE.has(i) ? ' onpath' : ''}" data-e="${i}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`; });
+  cuts.forEach(i => { const [a, b] = G.edges[i], [x1, y1] = G.nodes[a], [x2, y2] = G.nodes[b], mx = (x1 + x2) / 2, my = (y1 + y2) / 2, d = 8;
+    s += `<line class="xmark" x1="${mx - d}" y1="${my - d}" x2="${mx + d}" y2="${my + d}"/><line class="xmark" x1="${mx - d}" y1="${my + d}" x2="${mx + d}" y2="${my - d}"/>`; });
+  if (o.hit) G.edges.forEach(([a, b], i) => { const [x1, y1] = G.nodes[a], [x2, y2] = G.nodes[b];
+    s += `<line class="hit" data-e="${i}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"><title>Connection ${lab(a)}–${lab(b)}</title></line>`; });
+  Object.entries(G.nodes).forEach(([k, [x, y]]) => {
+    const cls = ['node', k === G.s ? 'src' : '', k === G.t ? 'dst' : '', o.click ? 'click' : '', pn.includes(k) ? 'inpath' : '', G.labels ? 'small' : '', (o.dead || []).includes(k) ? 'dead' : ''].filter(Boolean).join(' ');
+    s += `<g class="${cls}" data-n="${k}"${o.click ? ` tabindex="0" role="button" aria-label="${esc(lab(k))}"` : ''}><circle cx="${x}" cy="${y}" r="${r}"/><text x="${x}" y="${y}">${esc(lab(k))}</text></g>`;
+  });
+  if (!o.noRoles){
+    const [sx, sy] = G.nodes[G.s], [tx, ty] = G.nodes[G.t];
+    if (G.roleRight) s += `<text class="lbl-s" x="${sx + r + 8}" y="${sy + 4}" style="text-anchor:start">Sender</text><text class="lbl-t" x="${tx + r + 8}" y="${ty + 4}" style="text-anchor:start">Receiver</text>`;
+    else s += `<text class="lbl-s" x="${sx}" y="${sy + r + 15}">Sender</text><text class="lbl-t" x="${tx}" y="${ty + r + 15}">Receiver</text>`;
+  }
+  if (o.pkt) s += `<circle class="pkt" r="8" cx="-50" cy="-50" style="display:none"/>`;
+  return s + '</svg>';
+}
+
+/* ---------- Widget: station MCQ ---------- */
+function wMCQ(el, id){
+  const q = MCQ[id], st = stationOf(el); reg(st, id);
+  let tries = 0, solved = false;
+  el.innerHTML = `<div class="q-tag">${esc(q.tag)}</div><div class="q-stem">${q.stem}</div>${q.graph ? `<div class="fig">${graphSVG(GRAPHS[q.graph], {dead:['V']})}</div>` : ''}<div class="opts" role="group" aria-label="Answer choices"></div><div class="fbox" aria-live="polite"></div>`;
+  const box = $('.opts', el), fb = $('.fbox', el);
+  shuffle(q.opts).forEach((o, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'opt';
+    b.innerHTML = `<span class="let">${LET[i]}</span><span class="ot">${o.t}</span>`;
+    b.onclick = () => {
+      if (solved) return; tries++;
+      if (state.first[id] === undefined){ state.first[id] = !!o.ok; save(); }
+      b.classList.remove('shake');
+      if (o.ok){
+        solved = true; b.classList.add('right');
+        $$('.opt', box).forEach(x => { x.disabled = true; if (x !== b && !x.classList.contains('wrong')) x.classList.add('faded'); });
+        fb.innerHTML = `<div class="fb good"><b class="lead">${tries === 1 ? 'First try!' : 'Got it on try ' + tries + '.'}</b>${o.fb}</div>`;
+        done(id);
+      } else {
+        void b.offsetWidth; b.classList.add('wrong', 'shake'); b.disabled = true;
+        fb.innerHTML = `<div class="fb bad"><b class="lead">Not quite. Here's why ${LET[i]} is wrong:</b>${o.fb}<p><i>Try another answer.</i></p></div>`;
+      }
+    };
+    box.appendChild(b);
+  });
+}
+
+/* ---------- Widget: tap-to-match ---------- */
+function wMatch(el, id){
+  const M = MATCHES[id], st = stationOf(el); reg(st, id);
+  const answer = Object.fromEntries(M.pairs);
+  el.innerHTML = `<div class="match"><div class="mcol" data-col="t"></div><div class="mcol" data-col="d"></div></div><div class="fbox" aria-live="polite"></div><div class="counter"></div>`;
+  const tc = $('[data-col=t]', el), dc = $('[data-col=d]', el), fb = $('.fbox', el), ctr = $('.counter', el);
+  let selT = null, selD = null, matched = 0;
+  M.pairs.forEach(([t]) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'mitem term'; b.dataset.v = t; b.textContent = t; tc.appendChild(b); });
+  shuffle(M.pairs.map(p => p[1])).forEach(d => { const b = document.createElement('button'); b.type = 'button'; b.className = 'mitem'; b.dataset.v = d; b.textContent = d; dc.appendChild(b); });
+  const count = () => ctr.textContent = `${matched} of ${M.pairs.length} matched`;
+  count();
+  function attempt(){
+    if (!selT || !selD) return;
+    const t = selT, d = selD; selT = selD = null;
+    if (answer[t.dataset.v] === d.dataset.v){
+      [t, d].forEach(x => { x.classList.remove('sel'); x.classList.add('done'); x.disabled = true; });
+      d.innerHTML = `<span class="pair">✓ ${esc(t.dataset.v)}</span>${esc(d.dataset.v)}`;
+      matched++; count();
+      fb.innerHTML = matched === M.pairs.length ? '<div class="fb good"><b class="lead">All matched!</b>You know these terms. Keep the key words in mind for the questions below.</div>' : `<div class="fb good">✓ <b>${esc(t.dataset.v)}</b> matched.</div>`;
+      if (matched === M.pairs.length) done(id);
+    } else {
+      [t, d].forEach(x => { x.classList.add('no', 'shake'); });
+      fb.innerHTML = `<div class="fb bad"><b class="lead">Not a match.</b>${esc(M.hints[t.dataset.v])}</div>`;
+      setTimeout(() => [t, d].forEach(x => x.classList.remove('no', 'shake', 'sel')), 650);
+    }
+  }
+  $$('.mitem', tc).forEach(b => b.onclick = () => { if (b.disabled) return; $$('.mitem', tc).forEach(x => x.classList.remove('sel')); b.classList.add('sel'); selT = b; attempt(); });
+  $$('.mitem', dc).forEach(b => b.onclick = () => { if (b.disabled) return; $$('.mitem', dc).forEach(x => x.classList.remove('sel')); b.classList.add('sel'); selD = b; attempt(); });
+}
+
+/* ---------- Widget: sorter ---------- */
+function wSort(el, id){
+  const S = SORTS[id], st = stationOf(el); reg(st, id);
+  const items = shuffle(S.items); let ok = 0;
+  el.innerHTML = `<div class="sorter"></div><div class="counter"></div>`;
+  const wrap = $('.sorter', el), ctr = $('.counter', el);
+  const count = () => ctr.textContent = ok === items.length ? `All ${items.length} sorted ✓` : `${ok} of ${items.length} sorted`;
+  items.forEach(it => {
+    const row = document.createElement('div'); row.className = 'sitem';
+    row.innerHTML = `<div class="st">${esc(it.t)}</div><div class="sbtns">${S.cats.map(([k, l]) => `<button type="button" class="sbtn" data-k="${k}">${esc(l)}</button>`).join('')}</div><div class="why" aria-live="polite"></div>`;
+    $$('.sbtn', row).forEach(b => b.onclick = () => {
+      const why = $('.why', row);
+      if (b.dataset.k === it.c){
+        b.classList.add('right'); row.classList.add('ok'); $$('.sbtn', row).forEach(x => x.disabled = true);
+        why.className = 'why'; why.textContent = '✓ ' + it.why; ok++; count();
+        if (ok === items.length) done(id);
+      } else {
+        b.classList.add('wrong'); b.disabled = true;
+        why.className = 'why bad'; why.textContent = '✗ Not quite. ' + it.why + ' Now choose again.';
+      }
+    });
+    wrap.appendChild(row);
+  });
+  count();
+}
+
+/* ---------- Widget: put steps in order ---------- */
+function wOrder(el, id){
+  const O = ORDERS[id], st = stationOf(el); reg(st, id);
+  const steps = O.steps.map((s, i) => ({...s, i}));
+  let pool = shuffle(steps), placed = [];
+  el.innerHTML = `<div class="order"><div><h5>Steps: tap the next one</h5><div class="olist" data-l="pool"></div></div><div><h5>Your order</h5><div class="olist" data-l="placed"></div></div></div><div class="fbox" aria-live="polite"></div>`;
+  const P = $('[data-l=pool]', el), L = $('[data-l=placed]', el), fb = $('.fbox', el);
+  function draw(){
+    P.innerHTML = ''; pool.forEach(s => { const b = document.createElement('button'); b.type = 'button'; b.className = 'oitem'; b.textContent = s.t; b.onclick = () => pick(s, b); P.appendChild(b); });
+    if (!pool.length) P.innerHTML = '<div class="empty-slot">All steps placed ✓</div>';
+    L.innerHTML = placed.map((s, k) => `<div class="oplaced"><span class="on">${k + 1}</span><span>${esc(s.t)}</span></div>`).join('') + (placed.length < steps.length ? `<div class="empty-slot">Step ${placed.length + 1} goes here</div>` : '');
+  }
+  function pick(s, b){
+    if (s.i === placed.length){
+      placed.push(s); pool = pool.filter(x => x !== s); draw();
+      if (placed.length === steps.length){ fb.innerHTML = '<div class="fb good"><b class="lead">Perfect order!</b>Notice how the layers depend on each other: DNS finds the address, HTTP makes the request, and TCP/IP packets carry it across the Internet and back.</div>'; done(id); }
+      else fb.innerHTML = '';
+    } else {
+      b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+      fb.innerHTML = `<div class="fb bad"><b class="lead">Not yet.</b>${esc(s.no)}</div>`;
+    }
+  }
+  draw();
+}
+
+/* ---------- Widget: build a path (Station 1) ---------- */
+function wPath(el, id){
+  let G = GRAPHS.pb; const st = stationOf(el); reg(st, id);
+  const lab = k => G.labels[k];
+  let path = [G.s], found = [], lock = false;
+  el.innerHTML = `<div class="svgwrap"></div><div class="pb-path" aria-live="polite"></div><div class="btn-row"><button type="button" class="btn btn-sm" data-a="undo">Undo</button><button type="button" class="btn btn-sm" data-a="reset">Start over</button></div><div class="fbox" aria-live="polite"></div><div class="found"></div>`;
+  const W = $('.svgwrap', el), T = $('.pb-path', el), fb = $('.fbox', el), F = $('.found', el);
+  function draw(bad){
+    G = window.innerWidth < 640 ? GRAPHS.pbv : GRAPHS.pb;
+    W.innerHTML = graphSVG(G, {click:true, path, label:'Network from Jesse\'s phone to a friend\'s laptop. Tap devices to build a path.'});
+    $$('.node', W).forEach(n => {
+      n.onclick = () => tap(n.dataset.n);
+      n.onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); tap(n.dataset.n); } };
+      if (n.dataset.n === bad) n.classList.add('bad');
+    });
+    T.innerHTML = '<b>Your path:</b> ' + path.map(lab).join(' → ');
+    F.innerHTML = found.map((p, i) => `<div>✓ Path ${i + 1}: ${p.split('>').map(lab).join(' → ')}</div>`).join('');
+  }
+  function tap(n){
+    if (lock) return;
+    const last = path[path.length - 1];
+    if (n === last) return;
+    if (path.includes(n)){ fb.innerHTML = `<div class="fb bad">You've already visited <b>${lab(n)}</b>. A path keeps moving forward to a new device.</div>`; return; }
+    if (edgeIndex(G, last, n) < 0){ fb.innerHTML = `<div class="fb bad"><b class="lead">No direct connection.</b>${lab(last)} and ${lab(n)} aren't connected by a line, so data can't jump there. A path only moves along direct connections.</div>`; draw(n); return; }
+    path.push(n); fb.innerHTML = '';
+    if (n === G.t){
+      const key = path.join('>');
+      if (found.includes(key)){ fb.innerHTML = '<div class="fb info">You already found that path. Try a different route through the routers.</div>'; }
+      else {
+        found.push(key);
+        fb.innerHTML = found.length === 1
+          ? '<div class="fb good"><b class="lead">Path found!</b>Every step was a direct connection, and Jesse\'s phone was never directly connected to the laptop. Now find a <b>different</b> path.</div>'
+          : '<div class="fb good"><b class="lead">Two different paths!</b>Because there\'s more than one path, this network has <b>redundancy</b>. If one router fails, data can still get through. You\'ll use this idea in Station 3.</div>';
+        if (found.length >= 2) done(id);
+      }
+      draw(); lock = true;
+      setTimeout(() => { path = [G.s]; lock = false; draw(); }, 1400);
+      return;
+    }
+    draw();
+  }
+  let lastNarrow = window.innerWidth < 640;
+  window.addEventListener('resize', () => { const n = window.innerWidth < 640; if (n !== lastNarrow){ lastNarrow = n; draw(); } });
+  $('[data-a=undo]', el).onclick = () => { if (!lock && path.length > 1){ path.pop(); fb.innerHTML = ''; draw(); } };
+  $('[data-a=reset]', el).onclick = () => { if (!lock){ path = [G.s]; fb.innerHTML = ''; draw(); } };
+  draw();
+}
+
+/* ---------- Widget: IP delivery (Station 2) ---------- */
+function wIP(el, id){
+  const st = stationOf(el); reg(st, id);
+  const devs = [{n:'Laptop', ip:'198.51.100.24'}, {n:'Phone', ip:'203.0.113.7', ok:true}, {n:'Game console', ip:'203.0.113.70'}, {n:'Smart TV', ip:'192.0.2.15'}];
+  el.innerHTML = `<p>A packet arrives at a home router. Its metadata says <b style="font-family:var(--mono)">TO 203.0.113.7</b>. Which device should the router send it to?</p><div class="devices" data-s="1"></div><div class="fbox" data-f="1" aria-live="polite"></div><div data-s="2"></div>`;
+  const D1 = $('[data-s="1"]', el), F1 = $('[data-f="1"]', el), S2 = $('[data-s="2"]', el);
+  let ok1 = false;
+  devs.forEach(d => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'device';
+    b.innerHTML = `<span class="dn">${d.n}</span><span class="ip">${d.ip}</span>`;
+    b.onclick = () => {
+      if (ok1) return;
+      if (d.ok){ ok1 = true; b.classList.add('right'); $$('.device', D1).forEach(x => x.disabled = true);
+        F1.innerHTML = '<div class="fb good"><b class="lead">Delivered!</b>The router matched the destination IP address to the one device that has it.</div>'; step2(); }
+      else { b.classList.add('wrong'); b.disabled = true;
+        F1.innerHTML = `<div class="fb bad">${d.ip === '203.0.113.70' ? '203.0.113.<b>70</b> is not the same as 203.0.113.<b>7</b>. Every digit counts!' : `That device's address is ${d.ip}. It has to match the destination exactly.`}</div>`; }
+    };
+    D1.appendChild(b);
+  });
+  function step2(){
+    S2.innerHTML = `<p style="margin-top:14px"><b>Uh-oh.</b> A setup mistake gives two devices the <b>same</b> IP address, 203.0.113.7. A new packet arrives for 203.0.113.7. Where should the router send it?</p><div class="opts"></div><div class="fbox" aria-live="polite"></div>`;
+    const O = $('.opts', S2), F = $('.fbox', S2);
+    [['Phone (203.0.113.7)', false], ['Tablet (203.0.113.7)', false], ['The router can\'t know which device the packet is for', true]].forEach(([t, ok], i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'opt';
+      b.innerHTML = `<span class="let">${LET[i]}</span><span class="ot">${t}</span>`;
+      b.onclick = () => {
+        if (ok){ b.classList.add('right'); $$('.opt', O).forEach(x => x.disabled = true);
+          F.innerHTML = '<div class="fb good"><b class="lead">Right.</b>That\'s why every device on the Internet needs a <b>unique</b> IP address. It\'s like the Lesson 3 warm-up: in a room full of people with the same name, messages get mixed up.</div>'; done(id); }
+        else { b.classList.add('wrong'); b.disabled = true;
+          F.innerHTML = '<div class="fb bad">Can you be sure? Both devices have that address, so the router has no way to tell which one the data is for.</div>'; }
+      };
+      O.appendChild(b);
+    });
+  }
+}
+
+/* ---------- Packet data (Station 4) ---------- */
+const MSG = 'PACKETS CAN ARRIVE OUT OF ORDER OR NOT AT ALL!';
+const CHUNKS = []; for (let i = 0; i < MSG.length; i += 8) CHUNKS.push(MSG.slice(i, i + 8));
+function pktInner(i, numbered){
+  return `<span class="meta"><span>FROM 198.51.100.24</span><span>TO&nbsp;&nbsp; 203.0.113.7</span>${numbered ? `<span class="num">PACKET ${i + 1} OF ${CHUNKS.length}</span>` : ''}</span><span class="data">${esc(CHUNKS[i])}</span>`;
+}
+function wUDP(el, id){
+  const st = stationOf(el); reg(st, id);
+  const arrival = [2, 0, 5, 1, 4];
+  el.innerHTML = `<p>Your friend sends you a ${CHUNKS.length}-packet message using a <b>"just send it"</b> protocol, like UDP. There are no packet numbers and no checking. Here's what showed up, in the order it arrived:</p>
+    <div class="pool">${arrival.map(i => `<div class="packet static">${pktInner(i, false)}</div>`).join('')}</div>
+    <div class="sub">What the receiving computer reads</div><div class="readout">${esc(arrival.map(i => CHUNKS[i]).join(''))}</div>
+    <p style="margin-top:12px"><b>Can the computer rebuild the original message?</b></p><div class="opts"></div><div class="fbox" aria-live="polite"></div>`;
+  const O = $('.opts', el), F = $('.fbox', el);
+  [['Yes. It can just rearrange the packets into the right order.', false, 'A person might guess from context, but a computer can\'t. There are no packet numbers, so it can\'t tell the order, and it has no way to know one packet never arrived.'],
+   ['No. It can\'t tell the right order, or that a packet is missing.', true, 'Right. Without numbering, checking, or resending, messages can arrive jumbled or incomplete. <p><b>So why would anyone use UDP?</b> Because it\'s fast. On a live video call, a tiny glitch is better than freezing while you wait for a lost packet. Next, see how TCP fixes the problem.</p>']
+  ].forEach(([t, ok, f], i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'opt';
+    b.innerHTML = `<span class="let">${LET[i]}</span><span class="ot">${t}</span>`;
+    b.onclick = () => {
+      if (ok){ b.classList.add('right'); $$('.opt', O).forEach(x => x.disabled = true); F.innerHTML = `<div class="fb good">${f}</div>`; done(id); }
+      else { b.classList.add('wrong'); b.disabled = true; F.innerHTML = `<div class="fb bad"><b class="lead">Not quite.</b>${f}</div>`; }
+    };
+    O.appendChild(b);
+  });
+}
+function wTCP(el, id){
+  const st = stationOf(el); reg(st, id);
+  const N = CHUNKS.length, MISSING = 3;
+  let arrived = [4, 1, 5, 0, 2], asm = [], fresh = -1, finished = false;
+  el.innerHTML = `<p>Now the same message is sent with <b>TCP</b>. Each packet's metadata includes its <b>packet number</b>. Rebuild the message by tapping packets in order, starting with packet 1.</p>
+    <div class="sub">Arrived packets</div><div class="pool" data-p></div>
+    <div class="sub">Rebuilt message</div><div class="assembled" data-a></div>
+    <div class="req"><span>Missing a packet? Ask the sender to resend packet #</span><select aria-label="Packet number to request">${CHUNKS.map((c, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}</select><button type="button" class="btn btn-sm">Request resend</button></div>
+    <div class="fbox" aria-live="polite"></div>`;
+  const P = $('[data-p]', el), A = $('[data-a]', el), R = $('.req', el), F = $('.fbox', el);
+  function draw(){
+    P.innerHTML = '';
+    arrived.filter(i => !asm.includes(i)).forEach(i => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'packet' + (i === fresh ? ' arrive' : '');
+      b.setAttribute('aria-label', `Packet ${i + 1} of ${N}, data: ${CHUNKS[i]}`);
+      b.innerHTML = pktInner(i, true); b.onclick = () => pick(i, b); P.appendChild(b);
+    });
+    if (!P.children.length) P.innerHTML = '<span class="muted">No packets waiting.</span>';
+    A.innerHTML = asm.length ? asm.map(i => `<div class="packet">${pktInner(i, true)}</div>`).join('') : '<span class="muted">Tap packet 1 to start.</span>';
+    fresh = -1;
+  }
+  function pick(i, b){
+    if (finished) return;
+    const next = asm.length;
+    if (i === next){
+      asm.push(i); draw();
+      if (asm.length === N){
+        finished = true;
+        F.innerHTML = `<div class="fb good"><b class="lead">Message rebuilt!</b><div class="readout">${esc(MSG)}</div><p>Here's what TCP did with the metadata: <b>(1)</b> used the packet numbers to put packets in order, <b>(2)</b> noticed packet ${MISSING + 1} was missing, and <b>(3)</b> asked for it again. The IP addresses in every packet's metadata told routers where to send it.</p></div>`;
+        R.classList.remove('pulse'); done(id);
+      } else F.innerHTML = '';
+    } else {
+      b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+      if (!arrived.includes(next)){
+        F.innerHTML = `<div class="fb bad"><b class="lead">Packet ${next + 1} hasn't arrived!</b>Look at the numbers: you have ${next}, but the next one you can see is ${Math.min(...arrived.filter(x => !asm.includes(x))) + 1}. What would TCP do? Use <b>Request resend</b> below.</div>`;
+        R.classList.add('pulse');
+      } else F.innerHTML = `<div class="fb bad"><b class="lead">Not yet.</b>You need packet ${next + 1} next. Check the packet numbers in the metadata.</div>`;
+    }
+  }
+  $('button', R).onclick = () => {
+    if (finished) return;
+    const k = +$('select', R).value - 1;
+    if (arrived.includes(k)){ F.innerHTML = `<div class="fb info">Packet ${k + 1} already arrived. Use the metadata to figure out which number is missing.</div>`; return; }
+    arrived.push(k); fresh = k; R.classList.remove('pulse'); draw();
+    F.innerHTML = `<div class="fb good"><b class="lead">Resent!</b>The sender sent packet ${k + 1} again, and it just arrived. Keep rebuilding.</div>`;
+  };
+  draw();
+}
+
+/* ---------- Widget: Network Lab (Station 3) ---------- */
+function wNetLab(el, id){
+  const st = stationOf(el); PUZZLES.forEach((p, i) => reg(st, id + '-' + i));
+  let cur = 0, cuts = new Set(), log = [], busy = false, sent = 0;
+  const isSolved = i => !!(state.tasks[id + '-' + i] && state.tasks[id + '-' + i].done);
+  el.innerHTML = `<div class="tabs" role="tablist"></div><p class="lab-goal" style="margin:0"></p><div class="svgwrap"></div><div class="lab-status" aria-live="polite"></div>
+    <div class="btn-row"><button type="button" class="btn btn-primary" data-a="send">Send a packet</button><button type="button" class="btn" data-a="check">Check my answer</button><button type="button" class="btn" data-a="reset">Repair all lines</button><button type="button" class="btn" data-a="hint">Hint</button></div>
+    <div class="fbox" aria-live="polite"></div><div class="lab-log"></div>
+    <details class="kbd"><summary>Prefer buttons? Cut connections from a list</summary><div class="edge-btns"></div></details>`;
+  const TB = $('.tabs', el), GO = $('.lab-goal', el), W = $('.svgwrap', el), STS = $('.lab-status', el), FB = $('.fbox', el), LG = $('.lab-log', el), EB = $('.edge-btns', el);
+  const G = () => GRAPHS[PUZZLES[cur].g];
+  function drawTabs(){
+    TB.innerHTML = PUZZLES.map((p, i) => `<button type="button" class="tab${i === cur ? ' on' : ''}" role="tab" aria-selected="${i === cur}" data-i="${i}">Puzzle ${i + 1}${isSolved(i) ? '<span class="ck">✓</span>' : ''}</button>`).join('');
+    $$('.tab', TB).forEach(b => b.onclick = () => { if (busy) return; cur = +b.dataset.i; cuts = new Set(); log = []; FB.innerHTML = ''; draw(); });
+  }
+  function draw(){
+    const g = G(); drawTabs();
+    GO.innerHTML = `<b>${PUZZLES[cur].name}.</b> ${PUZZLES[cur].goal}`;
+    W.innerHTML = graphSVG(g, {cuts, hit:true, pkt:true, label:`Network lab. Sender ${g.s}, receiver ${g.t}. Tap a line to cut or repair it.`});
+    $$('.hit', W).forEach(h => {
+      const i = +h.dataset.e, line = $(`.edge[data-e="${i}"]`, W);
+      h.onmouseenter = () => line.classList.add('hover'); h.onmouseleave = () => line.classList.remove('hover');
+      h.onclick = () => toggle(i);
+    });
+    EB.innerHTML = g.edges.map(([a, b], i) => `<button type="button" data-e="${i}" aria-pressed="${cuts.has(i)}">${a}–${b}</button>`).join('');
+    $$('button', EB).forEach(b => b.onclick = () => toggle(+b.dataset.e));
+    status();
+    LG.innerHTML = log.slice(0, 5).map(x => `<div>${x}</div>`).join('');
+  }
+  function status(){
+    const g = G(), p = bfsPath(g, cuts);
+    STS.innerHTML = `<span class="pill neutral">Cuts: ${cuts.size}</span>` + (p ? `<span class="pill ok">✓ ${g.s} can still reach ${g.t}</span>` : `<span class="pill no">✗ ${g.s} is cut off from ${g.t}</span>`);
+  }
+  function toggle(i){ if (busy) return; cuts.has(i) ? cuts.delete(i) : cuts.add(i); FB.innerHTML = ''; draw(); }
+  function send(){
+    if (busy) return;
+    const g = G(), paths = allPaths(g, cuts); sent++;
+    if (!paths.length){ log.unshift(`Packet ${sent}: DROPPED. No path from ${g.s} to ${g.t} exists.`); draw(); return; }
+    const wts = paths.map(p => 1 / Math.pow(p.length, 1.6)), tot = wts.reduce((a, b) => a + b, 0);
+    let r = Math.random() * tot, k = 0; while (r > wts[k] && k < paths.length - 1){ r -= wts[k]; k++; }
+    const path = paths[k], svg = $('svg', W), dot = $('.pkt', svg);
+    const lines = []; for (let i = 0; i < path.length - 1; i++){ const e = $(`.edge[data-e="${edgeIndex(g, path[i], path[i + 1])}"]`, svg); if (e){ e.classList.add('onpath'); lines.push(e); } }
+    busy = true; dot.style.display = '';
+    const pts = path.map(n => g.nodes[n]); let seg = 0, t0 = null; const dur = 360;
+    const stepF = ts => {
+      if (t0 === null) t0 = ts;
+      const f = Math.min(1, (ts - t0) / dur), [x1, y1] = pts[seg], [x2, y2] = pts[seg + 1];
+      dot.setAttribute('cx', x1 + (x2 - x1) * f); dot.setAttribute('cy', y1 + (y2 - y1) * f);
+      if (f >= 1){ seg++; t0 = ts; if (seg >= pts.length - 1){ setTimeout(() => { busy = false; log.unshift(`Packet ${sent}: ${path.join(' → ')}`); draw(); }, 280); return; } }
+      requestAnimationFrame(stepF);
+    };
+    requestAnimationFrame(stepF);
+  }
+  function check(){
+    if (busy) return;
+    const g = G(), p = bfsPath(g, cuts), mf = maxFlow(g), min = mf.total;
+    if (p){ FB.innerHTML = `<div class="fb bad"><b class="lead">Still connected.</b>${g.s} can still reach ${g.t}, for example ${p.join(' → ')}. Keep cutting, or try a different spot.</div>`; return; }
+    if (cuts.size === min){
+      done(id + '-' + cur);
+      const colors = ['var(--s5)', 'var(--s1)', 'var(--s4)', 'var(--s6)'];
+      FB.innerHTML = `<div class="fb good"><b class="lead">You found the minimum: ${min} cuts!</b>Here's the proof that fewer won't work: the colored lines show ${min} paths from ${g.s} to ${g.t} that share <b>no</b> connections. Each one needs its own cut.${cur < PUZZLES.length - 1 ? '<p><button type="button" class="btn btn-sm btn-primary" data-next>Next puzzle →</button></p>' : '<p>All three puzzles done. You can find the minimum cut on any network.</p>'}</div>`;
+      drawTabs();
+      const dps = $('.dps', W);
+      dps.innerHTML = mf.paths.map((pp, i) => `<polyline class="dp" style="stroke:${colors[i % colors.length]}" points="${pp.map(n => g.nodes[n].join(',')).join(' ')}"/>`).join('');
+      const nb = $('[data-next]', FB); if (nb) nb.onclick = () => { cur++; cuts = new Set(); log = []; FB.innerHTML = ''; draw(); };
+    } else {
+      FB.innerHTML = `<div class="fb bad"><b class="lead">Disconnected, but not the minimum.</b>You used ${cuts.size} cuts, and it can be done with fewer. Repair a line or two and look again.<p><b>Hint:</b> ${PUZZLES[cur].hint}</p></div>`;
+    }
+  }
+  $('[data-a=send]', el).onclick = send;
+  $('[data-a=check]', el).onclick = check;
+  $('[data-a=reset]', el).onclick = () => { if (busy) return; cuts = new Set(); FB.innerHTML = ''; draw(); };
+  $('[data-a=hint]', el).onclick = () => { FB.innerHTML = `<div class="fb info"><b class="lead">Hint</b>${PUZZLES[cur].hint}</div>`; };
+  draw();
+}
+
+/* ---------- Mastery Check ---------- */
+function newAttempt(){
+  return {i:0, ans:[], order: MASTERY.map(q => q.fixed ? q.opts.map((_, k) => k) : shuffle(q.opts.map((_, k) => k))), recorded:false};
+}
+function renderMastery(){
+  const box = $('#masteryBox'), M = state.mq;
+  if (state.cur) return state.cur.i >= MASTERY.length ? renderResults() : renderQuestion();
+  if (needReview()) return renderReview();
+  const left = REVIEW_AFTER - M.fails;
+  box.innerHTML = `<div class="card"><h3 style="margin-bottom:8px">${M.n ? (passed() ? 'You already passed' : 'Ready for another try?') : 'Before you start'}</h3>
+    ${M.n ? `<p>First try: <b>${M.first} / 15</b> · Best: <b>${M.best} / 15</b> · Tries: ${M.n}</p>` : ''}
+    <ul><li>15 questions covering all six topics. <b>You need 12 out of 15 (80%) to pass.</b></li><li>Three are <b>"Select two answers"</b> questions, like on the AP exam.</li><li>You get one try per question, then you'll see why each answer is right or wrong.</li>
+    <li>You can retry. ${passed() ? 'Extra tries are just practice; your certificate keeps your best score.' : `After ${REVIEW_AFTER} tries in a row without passing, you'll do a quick review before trying again.${M.n ? ` <b>${left} ${left === 1 ? 'try' : 'tries'} left before the review.</b>` : ''}`}</li>
+    <li>Your certificate shows your <b>first</b> score and your <b>best</b> score.</li></ul>
+    <div class="btn-row"><button type="button" class="btn btn-primary" data-start>${M.n ? (passed() ? 'Retake for practice' : 'Start try ' + (M.n + 1)) : 'Start the Mastery Check'}</button>${passed() ? '<a class="btn" href="#certificate">View my certificate</a>' : ''}</div></div>`;
+  $('[data-start]', box).onclick = () => { state.cur = newAttempt(); save(); renderMastery(); window.scrollTo(0, 0); };
+}
+function renderQuestion(){
+  const box = $('#masteryBox'), C = state.cur;
+  const q = MASTERY[C.i], order = C.order[C.i], a = C.ans[C.i], s = stationById(TESTQ[q.tq].st);
+  box.innerHTML = `<div class="card"><div class="mq-top"><div class="q-tag" style="margin:0">Question ${C.i + 1} of ${MASTERY.length} · ${esc(s.title)}</div><div class="bar"><span style="width:${C.i / MASTERY.length * 100}%"></span></div></div>
+    <div class="q-stem">${q.stem}</div>${q.graph ? `<div class="fig">${graphSVG(GRAPHS[q.graph])}</div>` : ''}
+    <div class="opts" role="group" aria-label="Answer choices"></div><div class="fbox" aria-live="polite"></div>
+    <div class="btn-row"><button type="button" class="btn btn-primary" data-go disabled>Check answer</button></div></div>`;
+  const O = $('.opts', box), F = $('.fbox', box), GoB = $('[data-go]', box);
+  const need = q.two ? 2 : 1, sel = new Set();
+  const btns = order.map((k, pos) => {
+    const o = q.opts[k], b = document.createElement('button'); b.type = 'button'; b.className = 'opt';
+    b.innerHTML = `<span class="let">${LET[pos]}</span><span class="ot">${o.t}</span>`;
+    b.setAttribute('aria-pressed', 'false');
+    b.onclick = () => {
+      if (C.ans[C.i]) return;
+      if (q.two){ if (sel.has(k)) sel.delete(k); else if (sel.size < 2) sel.add(k); }
+      else { sel.clear(); sel.add(k); }
+      btns.forEach(x => { x.b.classList.toggle('sel', sel.has(x.k)); x.b.setAttribute('aria-pressed', sel.has(x.k)); });
+      GoB.disabled = sel.size !== need;
+    };
+    O.appendChild(b); return {b, k, pos};
+  });
+  function reveal(ans){
+    btns.forEach(({b, k}) => {
+      b.disabled = true; b.classList.remove('sel');
+      if (q.opts[k].ok) b.classList.add('right');
+      else if (ans.picked.includes(k)) b.classList.add('wrong');
+      else b.classList.add('faded');
+    });
+    const wrongPicked = btns.filter(x => ans.picked.includes(x.k) && !q.opts[x.k].ok);
+    F.innerHTML = ans.correct
+      ? `<div class="fb good"><b class="lead">Correct!</b>${q.explain}</div>`
+      : `<div class="fb bad"><b class="lead">Not this time.</b>${wrongPicked.map(x => `<p><b>You chose ${LET[x.pos]}:</b> ${q.opts[x.k].fb}</p>`).join('')}<p><b>Key idea:</b> ${q.explain}</p></div>`;
+    GoB.disabled = false;
+    GoB.textContent = C.i === MASTERY.length - 1 ? 'See my results →' : 'Next question →';
+    GoB.onclick = () => { C.i++; save(); renderMastery(); window.scrollTo(0, 0); };
+  }
+  if (a){ reveal(a); return; }
+  GoB.onclick = () => {
+    const picked = [...sel];
+    const correct = q.two ? picked.length === 2 && picked.every(k => q.opts[k].ok) : !!q.opts[picked[0]].ok;
+    C.ans[C.i] = {picked, correct}; save();
+    reveal(C.ans[C.i]);
+  };
+}
+function recordAttempt(res){
+  const M = state.mq, score = res.filter(Boolean).length;
+  M.n++; if (M.first === null) M.first = score;
+  if (score >= M.best){ M.best = score; M.bestRes = res; }
+  M.lastRes = res; M.lastAt = Date.now();
+  M.fails = score >= MASTERY_BAR ? 0 : M.fails + 1;
+}
+function renderResults(){
+  const box = $('#masteryBox'), C = state.cur, M = state.mq;
+  const res = C.ans.map(a => a.correct), score = res.filter(Boolean).length;
+  if (!C.recorded){ C.recorded = true; recordAttempt(res); save(); refresh(); }
+  const ok = score >= MASTERY_BAR, code = masteryCode();
+  const topics = topicScores(res), weak = topics.filter(t => t.got < t.of);
+  const next = ok ? '<a class="btn btn-primary" href="#certificate">View my certificate →</a>'
+    : needReview() ? '<button type="button" class="btn btn-primary" data-review>Start the quick review →</button>'
+    : '<button type="button" class="btn btn-primary" data-retake>Try again</button>';
+  box.innerHTML = `<div class="card"><div class="eyebrow">Try ${M.n}</div><div class="score-big">${score} / ${MASTERY.length}</div>
+      <p style="margin-top:8px">${ok ? (score === 15 ? '<b>Perfect score. You passed!</b>' : '<b>You passed!</b> You showed mastery of Unit 2.') : `<b>Not yet.</b> You need ${MASTERY_BAR} to pass. ${needReview() ? `That was ${REVIEW_AFTER} tries in a row, so next you'll do a quick review of your weakest topics. Then the Mastery Check unlocks again.` : `You have ${REVIEW_AFTER - M.fails} more ${REVIEW_AFTER - M.fails === 1 ? 'try' : 'tries'} before a quick review.`}`}</p>
+      ${M.n > 1 ? `<p class="muted">First try: ${M.first}/15 · Best: ${M.best}/15</p>` : ''}
+      <div class="cert-legend" style="text-align:left;margin-top:10px">Score by topic</div>
+      <div class="rgrid">${topics.map(t => `<div class="rcell ${t.got === t.of ? 'ok' : 'no'}"><b>${t.got === t.of ? '✓' : '✗'} ${esc(t.name)}</b>${t.got} of ${t.of} correct</div>`).join('')}</div></div>
+    ${code ? `<div class="card"><h4>Checkpoint code</h4><div class="cp-box"><span class="cp-code">${code}</span></div><p class="muted" style="margin:8px 0 0">Write it down. If the page reloads, enter your name and this code on the Start page${ok ? ' to get back to your certificate' : ' to pick up with your next try'}.</p></div>` : ''}
+    ${!ok && weak.length ? `<div class="card"><h4>Stations to revisit</h4><div class="btn-row">${weak.map(t => { const s = stationById(t.id); return `<a class="btn btn-sm" href="#${s.id}" style="border-color:${s.color}">Station ${s.n}: ${esc(s.title)}</a>`; }).join('')}</div></div>` : ''}
+    <div class="btn-row">${next}${ok ? '<button type="button" class="btn" data-retake>Retake for practice</button>' : ''}</div>`;
+  const rt = $('[data-retake]', box); if (rt) rt.onclick = () => { state.cur = newAttempt(); save(); renderMastery(); window.scrollTo(0, 0); };
+  const rv = $('[data-review]', box); if (rv) rv.onclick = () => { state.cur = null; save(); renderMastery(); window.scrollTo(0, 0); };
+}
+
+/* ---------- Quick review (after REVIEW_AFTER tries without passing) ---------- */
+function renderReview(){
+  const box = $('#masteryBox'), M = state.mq;
+  let topics = topicScores(M.lastRes || M.bestRes).filter(t => t.got < t.of);
+  if (!topics.length) topics = topicScores(null);
+  const solved = new Set();
+  box.innerHTML = `<div class="card"><div class="eyebrow">Quick review</div><h3 style="margin:2px 0 6px">Let's fix the tricky topics first</h3>
+    <p>You've had ${REVIEW_AFTER} tries without passing. Read the key idea for each topic below and answer its question correctly. Then the Mastery Check unlocks again.</p>
+    <div class="counter" data-count></div></div><div class="card" data-items></div>
+    <div class="btn-row"><button type="button" class="btn btn-primary is-locked" data-finish aria-disabled="true">Unlock the Mastery Check</button></div>`;
+  const list = $('[data-items]', box), fin = $('[data-finish]', box), cnt = $('[data-count]', box);
+  const upd = () => { cnt.textContent = `${solved.size} of ${topics.length} review questions done`; const all = solved.size === topics.length; fin.classList.toggle('is-locked', !all); fin.setAttribute('aria-disabled', !all); };
+  topics.forEach(t => {
+    const R = REVIEW[t.id], s = stationById(t.id), item = document.createElement('div'); item.className = 'review-item';
+    item.innerHTML = `<div class="q-tag" style="color:${s.color}">Station ${s.n}: ${esc(s.title)}</div><p>${R.key}</p><div class="q-stem">${R.q.stem}</div><div class="opts"></div><div class="fbox" aria-live="polite"></div>`;
+    const O = $('.opts', item), F = $('.fbox', item);
+    shuffle(R.q.opts).forEach((o, i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'opt';
+      b.innerHTML = `<span class="let">${LET[i]}</span><span class="ot">${o.t}</span>`;
+      b.onclick = () => {
+        if (solved.has(t.id)) return;
+        if (o.ok){ b.classList.add('right'); $$('.opt', O).forEach(x => x.disabled = true); F.innerHTML = `<div class="fb good">${o.fb}</div>`; solved.add(t.id); upd(); }
+        else { b.classList.add('wrong'); b.disabled = true; F.innerHTML = `<div class="fb bad"><b class="lead">Not quite.</b>${o.fb} <i>Try another answer.</i></div>`; }
+      };
+      O.appendChild(b);
+    });
+    list.appendChild(item);
+  });
+  upd();
+  fin.onclick = () => { if (solved.size !== topics.length) return; M.fails = 0; save(); refresh(); renderMastery(); window.scrollTo(0, 0); };
+}
+
+/* ---------- Certificate ---------- */
+function certData(){
+  const M = state.mq; if (!M.n) return null;
+  return {stations: stationsDone(), first: M.first, best: M.best, res: M.bestRes, attempts: M.n, fails: M.fails, at: new Date(M.lastAt || Date.now())};
+}
+const fmtDate = d => d.toLocaleDateString(undefined, {month:'long', day:'numeric', year:'numeric'}) + ' at ' + d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+function renderCert(){
+  const box = $('#certBox');
+  const d = certData();
+  if (!d || !passed()){
+    box.innerHTML = `<div class="card"><h3 style="margin-bottom:6px">Pass the Mastery Check to earn your certificate</h3><p>You need 12 out of 15.${d ? ` Your best so far is ${d.best}/15.` : ''}</p><a class="btn btn-primary" href="#mastery">Go to the Mastery Check</a></div>`;
+    return;
+  }
+  const how = dlNS ? 'Tap <b>Save certificate as image</b> below.' : STANDALONE ? 'Tap <b>Save certificate as image</b>. If no file downloads, tap <b>Print certificate</b> and choose "Save as PDF," or take a screenshot (on a Chromebook: <b>Ctrl + Shift + Show windows</b>).' : 'Take a screenshot of the certificate. On a Chromebook, press <b>Ctrl + Shift + Show windows</b>, then drag around the certificate.';
+  box.innerHTML = `
+    <div class="card no-print"><h4>Your certificate</h4><p class="muted" style="margin-bottom:8px">Check that your name is spelled exactly as it appears in Google Classroom. Your verification code is tied to it.</p>
+      <div class="fields"><label class="field"><span>Full name</span><input id="certName" type="text" autocomplete="name" placeholder="First and last name"></label><label class="field sm"><span>Class period</span><input id="certPeriod" type="text" placeholder="e.g. 7"></label></div></div>
+    <div class="cert" id="certCard"></div>
+    <div class="card no-print"><h4>Turn it in</h4>
+      <ol class="submit-steps"><li>${how}</li><li>Upload it to the Unit 2 review assignment in Google Classroom.</li></ol>
+      <div class="btn-row">${dlNS ? '<button type="button" class="btn btn-primary" data-img>Save certificate as image</button>' : ''}${STANDALONE ? '<button type="button" class="btn btn-primary" data-img2>Save certificate as image</button><button type="button" class="btn" data-print>Print certificate</button>' : ''}<button type="button" class="btn" data-copy>Copy verification code</button></div>
+      <div class="fbox" aria-live="polite"></div></div>`;
+  const nI = $('#certName', box), pI = $('#certPeriod', box), F = $('.fbox', box);
+  nI.value = state.name; pI.value = state.period;
+  const paint = () => {
+    const name = state.name.trim(), period = state.period.trim(), code = name ? makeCode(name, d) : '';
+    $('#certCard').innerHTML = `<div class="cert-inner">
+      <div class="cert-eyebrow">AP Computer Science Principles · Unit 2: The Internet</div>
+      <div class="cert-title">Certificate of Completion</div>
+      <div class="cert-sub">This certifies that</div>
+      <div class="cert-name${name ? '' : ' empty'}"></div>
+      ${period ? '<div class="cert-sub" data-per></div>' : ''}
+      <p class="cert-body">completed all six review stations and passed the Mastery Check.</p>
+      <div class="cert-stats"><div><span class="k">Stations</span><span class="v">${d.stations} / 6</span></div><div><span class="k">First try</span><span class="v">${d.first} / 15</span></div><div><span class="k">Best score</span><span class="v">${d.best} / 15</span></div><div><span class="k">Tries</span><span class="v">${d.attempts}</span></div></div>
+      <div class="cert-status ok">✓ Mastery shown (12/15 or higher)</div>
+      <div class="cert-legend">Best try, by topic</div>
+      <div class="cert-skills">${topicScores(d.res).map(t => `<span class="${t.got === t.of ? 'y' : 'n'}">${esc(t.name)}<b>${t.got}/${t.of}</b></span>`).join('')}</div>
+      <div class="cert-foot"><div>Issued ${fmtDate(d.at)}</div><div>Verification code: <span class="code">${code || 'add your name'}</span></div></div></div>`;
+    $('.cert-name', box).textContent = name || 'Type your name above';
+    const per = $('[data-per]', box); if (per) per.textContent = 'Class period ' + period;
+    return code;
+  };
+  let code = paint();
+  nI.oninput = () => { state.name = nI.value; $('#nameInput').value = nI.value; save(); code = paint(); };
+  pI.oninput = () => { state.period = pI.value; $('#periodInput').value = pI.value; save(); code = paint(); };
+  const needName = () => { if (state.name.trim()) return false; F.innerHTML = '<div class="fb bad">Type your full name first. The certificate and its code need it.</div>'; nI.focus(); return true; };
+  $('[data-copy]', box).onclick = () => {
+    if (needName()) return;
+    const ok = () => F.innerHTML = '<div class="fb good">Verification code copied.</div>';
+    const fallback = () => { const el = $('.cert-foot .code', box); const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); F.innerHTML = '<div class="fb info">The code is selected. Press Ctrl + C to copy it.</div>'; };
+    try { navigator.clipboard.writeText(code).then(ok, fallback); } catch (e) { fallback(); }
+  };
+  const pr = $('[data-print]', box); if (pr) pr.onclick = () => { if (!needName()) window.print(); };
+  const fileName = () => `Unit2-Review-Certificate-${state.name.trim().replace(/[^A-Za-z0-9]+/g, '-')}.png`;
+  const im2 = $('[data-img2]', box);
+  if (im2) im2.onclick = async () => {
+    if (needName()) return;
+    im2.disabled = true;
+    try {
+      const blob = await certBlob(d, state.name.trim(), state.period.trim(), code);
+      const url = URL.createObjectURL(blob), a = document.createElement('a');
+      a.href = url; a.download = fileName(); document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      F.innerHTML = '<div class="fb good"><b class="lead">Check your Downloads folder.</b>Upload the image to Google Classroom. If no file appeared, take a screenshot of the certificate instead.</div>';
+    } catch (e) { F.innerHTML = '<div class="fb bad">The image couldn\'t be made here. Take a screenshot of the certificate instead.</div>'; }
+    im2.disabled = false;
+  };
+  const im = $('[data-img]', box);
+  if (im) im.onclick = async () => {
+    if (needName()) return;
+    im.disabled = true; F.innerHTML = '<div class="fb info">Preparing your image…</div>';
+    try {
+      const blob = await certBlob(d, state.name.trim(), state.period.trim(), code);
+      await dlNS.save({filename: fileName(), data: blob});
+      F.innerHTML = '<div class="fb good"><b class="lead">Saved.</b>Now upload the image to Google Classroom.</div>';
+    } catch (e) {
+      const c = e && e.code;
+      F.innerHTML = c === 'declined' ? '<div class="fb info">Not saved. Tap the button again when you\'re ready.</div>'
+        : c === 'rate_limited' ? '<div class="fb info">A save window is already open. Finish that one first.</div>'
+        : '<div class="fb bad">Saving isn\'t available here. Take a screenshot of the certificate instead.</div>';
+    }
+    im.disabled = false;
+  };
+}
+function rrect(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+async function certBlob(d, name, period, code){
+  try { await Promise.all(['600 72px "IBM Plex Serif"', 'italic 400 30px "IBM Plex Serif"', '400 30px "IBM Plex Sans"', '700 30px "IBM Plex Sans"', '600 26px "IBM Plex Mono"'].map(f => document.fonts.load(f))); } catch (e) {}
+  const W = 1600, H = 1130, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  const SANS = '"IBM Plex Sans", system-ui, Arial, sans-serif', SERIF = '"IBM Plex Serif", Georgia, serif', MONO = '"IBM Plex Mono", Consolas, monospace';
+  const ink = '#17202b', muted = '#566374', acc = '#1f6feb', rule = '#c9d3e0', good = '#17803a', goodS = '#e2f4e7', bad = '#c42b2b', badS = '#fdeceb';
+  g.fillStyle = '#fffdf8'; g.fillRect(0, 0, W, H);
+  g.strokeStyle = acc; g.lineWidth = 6; g.strokeRect(28, 28, W - 56, H - 56); g.lineWidth = 2; g.strokeRect(42, 42, W - 84, H - 84);
+  g.strokeStyle = rule; g.lineWidth = 1.5; g.strokeRect(62, 62, W - 124, H - 124);
+  g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+  const T = (txt, y, font, color) => { g.font = font; g.fillStyle = color; g.fillText(txt, W / 2, y); };
+  T('AP COMPUTER SCIENCE PRINCIPLES  ·  UNIT 2: THE INTERNET', 140, `600 24px ${SANS}`, muted);
+  T('Certificate of Completion', 228, `600 66px ${SERIF}`, ink);
+  T('This certifies that', 298, `italic 400 30px ${SERIF}`, muted);
+  let fs = 72; g.font = `600 ${fs}px ${SERIF}`;
+  while (g.measureText(name).width > W - 380 && fs > 34){ fs -= 4; g.font = `600 ${fs}px ${SERIF}`; }
+  T(name, 392, `600 ${fs}px ${SERIF}`, ink);
+  g.strokeStyle = rule; g.lineWidth = 2; g.beginPath(); g.moveTo(420, 420); g.lineTo(W - 420, 420); g.stroke();
+  let y = 470;
+  if (period){ T('Class period ' + period, y, `400 28px ${SANS}`, muted); y += 52; }
+  T('completed all six review stations and passed the Mastery Check.', y, `400 30px ${SANS}`, ink);
+  const stats = [['STATIONS', `${d.stations} / 6`], ['FIRST TRY', `${d.first} / 15`], ['BEST SCORE', `${d.best} / 15`], ['TRIES', String(d.attempts)]];
+  const bw = 250, bh = 112, gap = 24, by = y + 40; let x0 = (W - (4 * bw + 3 * gap)) / 2;
+  stats.forEach(([k, v], i) => { const x = x0 + i * (bw + gap); rrect(g, x, by, bw, bh, 12); g.strokeStyle = rule; g.lineWidth = 2; g.stroke();
+    g.font = `700 18px ${SANS}`; g.fillStyle = muted; g.fillText(k, x + bw / 2, by + 38); g.font = `700 42px ${SANS}`; g.fillStyle = ink; g.fillText(v, x + bw / 2, by + 90); });
+  const st = '✓ Mastery shown (12/15 or higher)';
+  g.font = `700 28px ${SANS}`; const sw = g.measureText(st).width + 64, sy = by + bh + 36;
+  rrect(g, (W - sw) / 2, sy, sw, 56, 28); g.fillStyle = goodS; g.fill(); g.fillStyle = good; g.fillText(st, W / 2, sy + 38);
+  const ky = sy + 56 + 48; T('Best try, by topic', ky, `400 20px ${SANS}`, muted);
+  const cw = 196, chh = 64, cg = 12, cy = ky + 16; x0 = (W - (6 * cw + 5 * cg)) / 2;
+  topicScores(d.res).forEach((t, i) => { const ok = t.got === t.of, x = x0 + i * (cw + cg); rrect(g, x, cy, cw, chh, 8); g.fillStyle = ok ? goodS : badS; g.fill();
+    g.fillStyle = ok ? good : bad; g.font = `600 17px ${SANS}`; g.fillText(t.name, x + cw / 2, cy + 25); g.font = `700 22px ${SANS}`; g.fillText(`${t.got}/${t.of}`, x + cw / 2, cy + 52); });
+  const fy = H - 104;
+  g.strokeStyle = rule; g.lineWidth = 1.5; g.beginPath(); g.moveTo(110, fy - 44); g.lineTo(W - 110, fy - 44); g.stroke();
+  g.textAlign = 'left'; g.font = `400 24px ${SANS}`; g.fillStyle = muted; g.fillText('Issued ' + fmtDate(d.at), 110, fy);
+  g.textAlign = 'right'; g.font = `600 26px ${MONO}`; g.fillStyle = ink; g.fillText(code, W - 110, fy);
+  const cwid = g.measureText(code).width; g.font = `400 24px ${SANS}`; g.fillStyle = muted; g.fillText('Verification code', W - 110 - cwid - 16, fy);
+  return new Promise((resolve, reject) => c.toBlob(b => b ? resolve(b) : reject({code:'bad_request'}), 'image/png'));
+}
+
+/* ---------- Teacher verification ---------- */
+const whyText = {
+  noname: 'Enter the student\'s name.',
+  format: 'That isn\'t a complete code. Codes look like U2-XXXX-XXXX-XXXX-XXXX.',
+  mismatch: 'This code doesn\'t match that name. Check the name is spelled exactly as it appears on the certificate. If it still fails, the certificate may have been copied or edited.',
+  nocode: 'No code found on this line.'
+};
+const missedList = r => { const m = topicScores(r.res).filter(t => t.got < t.of).map(t => `${t.name} ${t.got}/${t.of}`); return m.length ? m.join(', ') : 'None'; };
+function initVerify(){
+  $('#vBtn').onclick = () => {
+    const r = readCode($('#vName').value, $('#vCode').value), out = $('#vOne');
+    if (!r.ok){ out.innerHTML = `<div class="fb bad"><b class="lead">✗ Not verified</b>${whyText[r.why]}</div>`; return; }
+    out.innerHTML = `<div class="fb good"><b class="lead">✓ Valid code</b><dl class="vgrid">
+      <dt>Stations</dt><dd>${r.stations} of 6</dd><dt>First try</dt><dd>${r.first} / 15</dd><dt>Best score</dt><dd>${r.best} / 15</dd>
+      <dt>Tries</dt><dd>${r.attempts}</dd><dt>Passed (12/15)</dt><dd>${r.best >= MASTERY_BAR ? '<span class="ok-t">Yes</span>' : '<span class="no-t">Not yet</span>'}</dd>
+      <dt>Topics to review</dt><dd>${missedList(r)}</dd><dt>Issued</dt><dd>${fmtDate(r.at)}</dd></dl></div>`;
+  };
+  let tsv = '';
+  $('#vListBtn').onclick = () => {
+    const lines = $('#vList').value.split(/\r?\n/).map(l => l.trim()).filter(Boolean), out = $('#vMany');
+    if (!lines.length){ out.innerHTML = '<div class="fb info">Paste at least one line: a name, then a code.</div>'; return; }
+    const rows = lines.map(l => {
+      const m = l.match(/(U2[-\s]*[0-9A-Za-z][0-9A-Za-z\s-]{12,})\s*$/i);
+      if (!m) return {name: l, r: {ok:false, why:'nocode'}};
+      const name = l.slice(0, m.index).replace(/[\t,;|]+\s*$/, '').trim();
+      return {name, r: readCode(name, m[1])};
+    });
+    const valid = rows.filter(x => x.r.ok), mast = valid.filter(x => x.r.best >= MASTERY_BAR);
+    tsv = ['Name\tValid\tStations\tFirst try\tBest score\tTries\tPassed\tTopics to review\tIssued']
+      .concat(rows.map(({name, r}) => r.ok ? [name, 'Yes', r.stations, r.first, r.best, r.attempts, r.best >= MASTERY_BAR ? 'Yes' : 'No', missedList(r), fmtDate(r.at)].join('\t') : [name, 'No', '', '', '', '', '', '', ''].join('\t'))).join('\n');
+    out.innerHTML = `<p><b>${valid.length} of ${rows.length}</b> codes verified · <b>${mast.length}</b> passed (12/15 or higher).</p>
+      <div class="tbl-wrap"><table class="tbl vtable"><thead><tr><th>Name</th><th>Valid</th><th>Stations</th><th>First</th><th>Best</th><th>Tries</th><th>Passed</th><th>Topics to review</th><th>Issued</th></tr></thead><tbody>
+      ${rows.map(({name, r}) => r.ok ? `<tr><td>${esc(name)}</td><td class="ok-t">✓</td><td>${r.stations}/6</td><td>${r.first}/15</td><td>${r.best}/15</td><td>${r.attempts}</td><td>${r.best >= MASTERY_BAR ? '<span class="ok-t">Yes</span>' : 'Not yet'}</td><td>${missedList(r)}</td><td>${r.at.toLocaleDateString()}</td></tr>`
+        : `<tr><td>${esc(name || '(no name)')}</td><td class="no-t">✗</td><td colspan="7" style="white-space:normal">${whyText[r.why]}</td></tr>`).join('')}
+      </tbody></table></div>`;
+    $('#vCopy').hidden = false;
+  };
+  $('#vCopy').onclick = () => {
+    const ok = () => $('#vMany').insertAdjacentHTML('beforeend', '<div class="fb good">Copied. Paste into Google Sheets or Excel.</div>');
+    const fail = () => $('#vMany').insertAdjacentHTML('beforeend', '<div class="fb info">Copying isn\'t available here. Select the table and copy it instead.</div>');
+    try { navigator.clipboard.writeText(tsv).then(ok, fail); } catch (e) { fail(); }
+  };
+}
+
+/* ---------- init ---------- */
+function init(){
+  loadSaved();
+  const W = {mcq:wMCQ, match:wMatch, sort:wSort, order:wOrder, pathb:wPath, netlab:wNetLab, udp:wUDP, tcp:wTCP, ip:wIP};
+  $$('[data-widget]').forEach(el => W[el.dataset.widget](el, el.dataset.id));
+  $('#miniNets').innerHTML = `<figure>${graphSVG(GRAPHS.miniA, {cuts:new Set([1]), label:'One path only. A cut between B and C disconnects A from C.'})}<figcaption><b style="color:var(--bad)">✗ No redundancy.</b> Only one path, so one cut breaks the connection.</figcaption></figure>
+    <figure>${graphSVG(GRAPHS.miniB, {cuts:new Set([1]), path:['A','D','C'], label:'Two paths. After the B to C cut, data reroutes through D.'})}<figcaption><b style="color:var(--good)">✓ Redundant.</b> A second path lets data reroute through D. The network is fault tolerant.</figcaption></figure>`;
+  renderAlignTable();
+  const restored = applySaved();
+  initStart();
+  renderWelcome(restored);
+  initVerify();
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[href^="#"]'); if (!a) return;
+    const v = a.getAttribute('href').slice(1);
+    if (VIEWS.includes(v)){ e.preventDefault(); if (a.getAttribute('aria-disabled') === 'true') return; go(v); }
+  });
+  const fromHash = () => { const h = location.hash.slice(1); if (VIEWS.includes(h) && h !== view){ view = h; route(); } };
+  window.addEventListener('hashchange', fromHash);
+  window.addEventListener('popstate', fromHash);
+  const h0 = location.hash.slice(1); view = VIEWS.includes(h0) ? h0 : 'home';
+  refresh(); route();
+  if (!STANDALONE && window.claude && typeof window.claude.use === 'function'){
+    window.claude.use('downloads').then(ns => { dlNS = ns; if (dlNS && view === 'certificate') renderCert(); }, () => {});
+  }
+}
+init();
+
+})();
+</script>
+
+</body>
+</html>
